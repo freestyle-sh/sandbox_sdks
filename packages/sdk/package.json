@@ -1,0 +1,24 @@
+{
+  "name": "sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "openapi-ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/sdk.gen.ts"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.60.1",
+    "openapi-typescript-codegen": "^0.29.0"
+  },
+  "dependencies": {
+    "@hey-api/client-fetch": "^0.5.7"
+  }
+}
