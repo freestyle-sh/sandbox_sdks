@@ -3,6 +3,37 @@ import { FreestyleSandboxes } from "..";
 import { tool } from "ai";
 import { z } from "zod";
 
+export const executeCodeSchema = z.object({
+  script: z.string().describe(`
+        The JavaScript or TypeScript script to execute, must be in the format of:
+
+        import { someModule } from "someModule";
+        export default () => {
+           ... your code here ...
+           return output;
+        }
+
+        or for async functions:
+
+        import { someModule } from "someModule";
+
+        export default async () => {
+            ... your code here ...
+            return output;
+        }
+        `),
+});
+
+export const executeCodeDescription = (envVars: string, nodeModules: string) =>
+  `Execute a JavaScript or TypeScript script.\n${
+    envVars.length > 0
+      ? `You can use the following environment variables: ${envVars}`
+      : ""
+  }\n${
+    nodeModules.length > 0
+      ? `You can use the following node modules: ${nodeModules}`
+      : "You cannot use any node modules."
+  }`;
 /**
  * Execute a JavaScript or TypeScript script
  *
@@ -23,35 +54,8 @@ export const executeTool = (
   const envVars = Object.keys(config.envVars ?? {}).join(", ");
   const nodeModules = Object.keys(config.nodeModules ?? {}).join(", ");
   return tool({
-    description: `Execute a JavaScript or TypeScript script.\n${
-      envVars.length > 0
-        ? `You can use the following environment variables: ${envVars}`
-        : ""
-    }\n${
-      nodeModules.length > 0
-        ? `You can use the following node modules: ${nodeModules}`
-        : "You cannot use any node modules."
-    }`,
-    parameters: z.object({
-      script: z.string().describe(`
-            The JavaScript or TypeScript script to execute, must be in the format of:
-            
-            import { someModule } from "someModule";
-            export default () => {
-               ... your code here ...
-               return output;
-            }
-
-            or for async functions:
-
-            import { someModule } from "someModule";
-
-            export default async () => {
-                ... your code here ...
-                return output;
-            }
-            `),
-    }),
+    description: executeCodeDescription(envVars, nodeModules),
+    parameters: executeCodeSchema,
     execute: async ({ script }) => {
       try {
         const res = await api.executeScript(script, config);

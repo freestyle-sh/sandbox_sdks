@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -25,6 +25,16 @@
         "types": "./dist/ai/index.d.mts",
         "default": "./dist/ai/index.mjs"
       }
+    },
+    "./mastra": {
+      "require": {
+        "types": "./dist/mastra/index.d.cts",
+        "default": "./dist/mastra/index.cjs"
+      },
+      "import": {
+        "types": "./dist/mastra/index.d.mts",
+        "default": "./dist/mastra/index.mjs"
+      }
     }
   },
   "scripts": {
@@ -41,6 +51,7 @@
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.5.7",
+    "@mastra/core": "^0.1.27-alpha.66",
     "ai": "^4.0.25",
     "humanlayer": "^0.7.0",
     "openai": "^4.77.3",
