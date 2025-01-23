@@ -1,14 +1,35 @@
 {
-  "name": "sdk",
-  "version": "1.0.0",
+  "name": "freestyle-sandboxes",
+  "version": "0.0.13",
   "type": "module",
-  "scripts": {
-    "build": "openapi-ts"
-  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
     ".": {
-      "import": "./src/sdk.gen.ts"
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    },
+    "./ai": {
+      "require": {
+        "types": "./dist/ai/index.d.cts",
+        "default": "./dist/ai/index.cjs"
+      },
+      "import": {
+        "types": "./dist/ai/index.d.mts",
+        "default": "./dist/ai/index.mjs"
+      }
     }
+  },
+  "scripts": {
+    "openapi": "openapi-ts",
+    "build": "pkgroll"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +37,15 @@
   "description": "",
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.60.1",
-    "openapi-typescript-codegen": "^0.29.0"
+    "pkgroll": "^2.6.0"
   },
   "dependencies": {
-    "@hey-api/client-fetch": "^0.5.7"
-  }
+    "@hey-api/client-fetch": "^0.5.7",
+    "ai": "^4.0.25",
+    "humanlayer": "^0.7.0",
+    "openai": "^4.77.3",
+    "openapi": "^1.0.1",
+    "zod": "^3.24.1"
+  },
+  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
 }

@@ -35,11 +35,12 @@ export type FreestyleDeployWebConfiguration = {
      */
     entrypoint?: (string) | null;
     /**
-     * The custom domains for the website, eg. [\"subdomain.yourwebsite.com\"]. You may not include *.style.dev domains here, those are reserved for projectIds
+     * The custom domains for the website, eg. [\"subdomain.yourwebsite.com\"]. You may include a single *.style.dev domain here.
      */
     domains?: Array<(string)> | null;
     /**
-     * The project id to deploy to, if not provided will create a new project, may be used to provision a new project with a specific id if that id is available
+     * Project ID was our original way of tracking deployments together, it is now deprecated and will be removed in the future. Please use the domains field to specify the domains for your project.
+     * @deprecated
      */
     projectId?: (string) | null;
     /**
@@ -63,18 +64,25 @@ export type FreestyleDeployWebErrorResponse = {
 
 export type FreestyleDeployWebPayload = {
     /**
-     * The files to deploy, a map of file paths to file contents, e.g. { \"index.js\": \"your main", \"file2.js\": \"your helper\" }
+     * The files to deploy, a map of file paths to file contents, e.g. { \"index.js\": {\"content\": \"your main\", \"encoding\": \"utf-8\"}, \"file2.js\": {\"content\": \"your helper\" } }
      *
      * **Do not include node modules in this bundle, they will not work**. Instead, includes a package-lock.json, bun.lockb, pnpm-lock.yaml, or yarn.lock, the node modules for the project will be installed from that lock file, or use the node_modules field in the configuration to specify the node modules to install.
      */
     files: {
-        [key: string]: (string);
+        [key: string]: FreestyleFile;
     };
     config?: FreestyleDeployWebConfiguration;
 };
 
 export type FreestyleDeployWebSuccessResponse = {
-    projectId: string;
+    deploymentId: string;
+};
+
+export type FreestyleDomainVerificationRequest = {
+    /**
+     * The domain to create a verification code for
+     */
+    domain: string;
 };
 
 export type FreestyleExecureScriptResultError = {
@@ -83,6 +91,7 @@ export type FreestyleExecureScriptResultError = {
 
 export type FreestyleExecureScriptResultSuccess = {
     result: unknown;
+    logs: Array<JavaScriptLog>;
 };
 
 export type FreestyleExecuteScriptParams = {
@@ -116,8 +125,34 @@ export type FreestyleExecuteScriptParamsConfiguration = {
     timeout?: (string) | null;
 };
 
+export type FreestyleFile = {
+    /**
+     * The content of the file
+     */
+    content: string;
+    /**
+     * The encoding of the file. Either **utf-8** or **base64**
+     */
+    encoding?: string;
+};
+
 export type FreestyleLogResponseObject = {
     message: string;
+};
+
+export type FreestyleVerifyDomainRequest = {
+    domain: string;
+};
+
+export type JavaScriptLog = {
+    /**
+     * The log message
+     */
+    message: string;
+    /**
+     * The log level
+     */
+    type: string;
 };
 
 export type HandleDeployCloudstateData = {
@@ -128,9 +163,49 @@ export type HandleDeployCloudstateResponse = (FreestyleCloudstateDeploySuccessRe
 
 export type HandleDeployCloudstateError = (FreestyleCloudstateDeployErrorResponse);
 
+export type HandleBackupCloudstateData = {
+    path: {
+        id: string;
+    };
+};
+
 export type HandleBackupCloudstateResponse = (Array<(number)>);
 
 export type HandleBackupCloudstateError = (unknown);
+
+export type HandleListDomainsResponse = (Array<{
+    domain: string;
+    createdAt: number;
+}>);
+
+export type HandleListDomainsError = ({
+    message: string;
+});
+
+export type HandleVerifyDomainData = {
+    body: FreestyleVerifyDomainRequest;
+};
+
+export type HandleVerifyDomainResponse = ({
+    domain: string;
+});
+
+export type HandleVerifyDomainError = ({
+    message: string;
+});
+
+export type HandleCreateDomainVerificationData = {
+    body: FreestyleDomainVerificationRequest;
+};
+
+export type HandleCreateDomainVerificationResponse = ({
+    verificationCode: string;
+    domain: string;
+});
+
+export type HandleCreateDomainVerificationError = ({
+    message: string;
+});
 
 export type HandleExecuteScriptData = {
     body: FreestyleExecuteScriptParams;
@@ -147,6 +222,12 @@ export type HandleDeployWebData = {
 export type HandleDeployWebResponse = (FreestyleDeployWebSuccessResponse);
 
 export type HandleDeployWebError = (FreestyleDeployWebErrorResponse);
+
+export type HandleGetLogsData = {
+    path: {
+        id: string;
+    };
+};
 
 export type HandleGetLogsResponse = (Array<FreestyleLogResponseObject>);
 

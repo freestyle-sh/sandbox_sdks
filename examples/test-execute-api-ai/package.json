@@ -1,0 +1,22 @@
+{
+  "name": "test-sdk-2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ai-sdk/openai": "^1.0.13",
+    "ai": "^4.0.26",
+    "dotenv": "^16.4.7",
+    "freestyle-sandboxes": "file:../../packages/sdk",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5"
+  }
+}
