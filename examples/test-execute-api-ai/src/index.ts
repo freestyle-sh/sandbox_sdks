@@ -12,9 +12,6 @@ const codeExecutor = executeTool({
   },
   envVars: {
     RESEND_API_KEY: process.env.RESEND_API_KEY!,
-    // STRIPE_API_KEY: `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`,
-
-    // STRIPE_SECRET_KEY: ``,
   },
 });
 
