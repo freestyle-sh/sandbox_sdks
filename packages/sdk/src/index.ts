@@ -192,7 +192,42 @@ export class FreestyleSandboxes {
     if (response.data) {
       return response.data;
     } else {
-      throw new Error("Failed to list domains");
+      throw new Error("Failed to list domains\n" + response.error.message);
+    }
+  }
+
+  async listDomainVerificationRequests(): Promise<sandbox_openapi.HandleListDomainVerificationRequestsResponse> {
+    const response = await sandbox_openapi.handleListDomainVerificationRequests(
+      {
+        client: this.client,
+      }
+    );
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(
+        "Failed to list domain verification requests\n" + response.error.message
+      );
+    }
+  }
+
+  async deleteDomainVerificationRequest(
+    domain: string,
+    verificationCode: string
+  ): Promise<sandbox_openapi.HandleDeleteDomainVerificationResponse> {
+    const response = await sandbox_openapi.handleDeleteDomainVerification({
+      client: this.client,
+      body: {
+        domain: domain,
+        verificationCode: verificationCode,
+      },
+    });
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(
+        `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`
+      );
     }
   }
 }

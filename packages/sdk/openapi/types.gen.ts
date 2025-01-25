@@ -29,6 +29,17 @@ export type FreestyleCloudstateDeploySuccessResponse = {
     projectId: string;
 };
 
+export type FreestyleDeleteDomainVerificationRequest = {
+    /**
+     * The domain to create a verification code for
+     */
+    domain: string;
+    /**
+     * The verification code
+     */
+    verificationCode: string;
+};
+
 export type FreestyleDeployWebConfiguration = {
     /**
      * The entrypoint file for the website
@@ -56,6 +67,7 @@ export type FreestyleDeployWebConfiguration = {
     envVars?: {
         [key: string]: (string);
     } | null;
+    serverStartCheck?: boolean;
 };
 
 export type FreestyleDeployWebErrorResponse = {
@@ -76,6 +88,11 @@ export type FreestyleDeployWebPayload = {
 
 export type FreestyleDeployWebSuccessResponse = {
     deploymentId: string;
+    domains?: Array<(string)> | null;
+    /**
+     * @deprecated
+     */
+    projectId?: (string) | null;
 };
 
 export type FreestyleDomainVerificationRequest = {
@@ -123,6 +140,10 @@ export type FreestyleExecuteScriptParamsConfiguration = {
      * The script timeout
      */
     timeout?: (string) | null;
+    /**
+     * If false, we'll not resolve peer dependencies for the packages given, this can speed up execute performance, but will break packages with peers unless the peers are manually specified.
+     */
+    peerDependencyResolution?: boolean;
 };
 
 export type FreestyleFile = {
@@ -182,6 +203,16 @@ export type HandleListDomainsError = ({
     message: string;
 });
 
+export type HandleListDomainVerificationRequestsResponse = (Array<{
+    verificationCode: string;
+    domain: string;
+    createdAt: number;
+}>);
+
+export type HandleListDomainVerificationRequestsError = ({
+    message: string;
+});
+
 export type HandleVerifyDomainData = {
     body: FreestyleVerifyDomainRequest;
 };
@@ -204,6 +235,19 @@ export type HandleCreateDomainVerificationResponse = ({
 });
 
 export type HandleCreateDomainVerificationError = ({
+    message: string;
+});
+
+export type HandleDeleteDomainVerificationData = {
+    body: FreestyleDeleteDomainVerificationRequest;
+};
+
+export type HandleDeleteDomainVerificationResponse = ({
+    verificationCode: string;
+    domain: string;
+});
+
+export type HandleDeleteDomainVerificationError = ({
     message: string;
 });
 
