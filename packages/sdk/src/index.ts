@@ -1,5 +1,6 @@
 import { Client, createClient } from "@hey-api/client-fetch";
 import * as sandbox_openapi from "../openapi/index.ts";
+
 export class FreestyleSandboxes {
   private client: Client;
   constructor(options: {
@@ -169,7 +170,10 @@ export class FreestyleSandboxes {
    */
   async verifyDomain(
     domain: string
-  ): Promise<sandbox_openapi.HandleVerifyDomainResponse> {
+  ): Promise<
+    | sandbox_openapi.HandleVerifyDomainResponse
+    | sandbox_openapi.HandleVerifyDomainError
+  > {
     const response = await sandbox_openapi.handleVerifyDomain({
       client: this.client,
       body: {
