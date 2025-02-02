@@ -1,4 +1,4 @@
-export default `export default () => {
+export default `export default async () => {
   let set1 = [1, 2, 3, 4, 5];
   let set2 = [4, 5, 6, 7, 8];
 

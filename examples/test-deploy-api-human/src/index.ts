@@ -4,7 +4,7 @@ import "dotenv/config";
 const api = new FreestyleSandboxes({
   apiKey: process.env.FREESTYLE_API_KEY!,
 });
-
+`
 api
   .deployWeb(
     {
@@ -26,7 +26,7 @@ server.listen(3000, () => {
       },
     },
     {
-      domains: ["pendor.ai"],
+      domains: ["test68.style.dev"],
       // projectId: "5b949388-78ef-4cdd-830c-e9681dfa2aec.style.dev",
     }
   )

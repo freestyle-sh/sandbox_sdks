@@ -3,16 +3,19 @@ import { FreestyleSandboxes } from "freestyle-sandboxes";
 import { generateText } from "ai";
 import "dotenv/config.js";
 import { createOpenAI } from "@ai-sdk/openai";
+import { githubdocs } from "./github_docs";
 
 const codeExecutor = executeTool({
   apiKey: process.env.FREESTYLE_API_KEY!,
-
   nodeModules: {
     resend: "4.0.1",
     // stripe: "17.5.0",
+    // octokit: "4.1.0",
   },
   envVars: {
     RESEND_API_KEY: process.env.RESEND_API_KEY!,
+    // STRIPE_API_KEY: process.env.STRIPE_API_KEY!,
+    // GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN!,
   },
 });
 
@@ -28,8 +31,7 @@ const { text, steps } = await generateText({
   },
   maxSteps: 4,
   maxRetries: 0,
-  prompt:
-    "Send a yo mamma joke from ai@swerdlow.dev to tycho@tensorpool.dev that is related to AI and GPUs. Please over explain the joke in the email.",
+  prompt: "What is the square root of the factorial of 17",
 });
 
 console.log(JSON.stringify(steps, null, 2));

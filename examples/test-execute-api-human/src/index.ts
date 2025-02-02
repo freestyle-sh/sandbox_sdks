@@ -1,9 +1,9 @@
 import * as sdk from "freestyle-sandboxes";
 
 import * as dotenv from "dotenv";
-import example from "./example_script.ts";
+import example_script from "./example_script.ts";
 import { stripe } from "./stripe.ts";
-import example_script from "./example_script_2.ts";
+// import example_script from "./example_script_2.ts";
 
 dotenv.config();
 
