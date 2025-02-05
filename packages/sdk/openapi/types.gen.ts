@@ -4,13 +4,14 @@ export type FreestyleCloudstateDeployConfiguration = {
     /**
      * ID of the project to deploy, if not provided will create a new project
      */
-    projectId?: (string) | null;
+    domains?: Array<(string)> | null;
     /**
      * The environment variables that the cloudstate deploy can access
      */
     envVars?: {
         [key: string]: (string);
     };
+    cloudstateDatabaseId?: (string) | null;
 };
 
 export type FreestyleCloudstateDeployErrorResponse = {
@@ -23,10 +24,8 @@ export type FreestyleCloudstateDeployRequest = {
 };
 
 export type FreestyleCloudstateDeploySuccessResponse = {
-    /**
-     * The id of the project deployed to
-     */
-    projectId: string;
+    deploymentId: string;
+    cloudstateDatabaseId: string;
 };
 
 export type FreestyleDeleteDomainVerificationRequest = {
@@ -102,15 +101,6 @@ export type FreestyleDomainVerificationRequest = {
     domain: string;
 };
 
-export type FreestyleExecureScriptResultError = {
-    error: string;
-};
-
-export type FreestyleExecureScriptResultSuccess = {
-    result: unknown;
-    logs: Array<JavaScriptLog>;
-};
-
 export type FreestyleExecuteScriptParams = {
     /**
      * The JavaScript or TypeScript script to execute
@@ -157,15 +147,7 @@ export type FreestyleFile = {
     encoding?: string;
 };
 
-export type FreestyleLogResponseObject = {
-    message: string;
-};
-
-export type FreestyleVerifyDomainRequest = {
-    domain: string;
-};
-
-export type JavaScriptLog = {
+export type FreestyleJavaScriptLog = {
     /**
      * The log message
      */
@@ -174,6 +156,15 @@ export type JavaScriptLog = {
      * The log level
      */
     type: string;
+};
+
+export type FreestyleLogResponseObject = {
+    message: string;
+    timestamp: string;
+};
+
+export type FreestyleVerifyDomainRequest = {
+    domain: string;
 };
 
 export type HandleDeployCloudstateData = {
@@ -193,6 +184,14 @@ export type HandleBackupCloudstateData = {
 export type HandleBackupCloudstateResponse = (Array<(number)>);
 
 export type HandleBackupCloudstateError = (unknown);
+
+export type HandleVerifyWildcardResponse = ({
+    domain: string;
+});
+
+export type HandleVerifyWildcardError = ({
+    message: string;
+});
 
 export type HandleListDomainsResponse = (Array<{
     domain: string;
@@ -251,13 +250,41 @@ export type HandleDeleteDomainVerificationError = ({
     message: string;
 });
 
+export type HandleListExecuteRunsData = {
+    query?: {
+        limit?: (number) | null;
+        offset?: (number) | null;
+    };
+};
+
+export type HandleGetExecuteRunData = {
+    path: {
+        deployment: string;
+    };
+};
+
 export type HandleExecuteScriptData = {
     body: FreestyleExecuteScriptParams;
 };
 
-export type HandleExecuteScriptResponse = (FreestyleExecureScriptResultSuccess);
+export type HandleExecuteScriptResponse = ({
+    result: unknown;
+    logs: Array<FreestyleJavaScriptLog>;
+});
 
-export type HandleExecuteScriptError = (FreestyleExecureScriptResultError);
+export type HandleExecuteScriptError = ({
+    error: string;
+});
+
+export type HandleGetLogsData = {
+    query: {
+        deploymentId: string;
+    };
+};
+
+export type HandleGetLogsResponse = (Array<FreestyleLogResponseObject>);
+
+export type HandleGetLogsError = unknown;
 
 export type HandleDeployWebData = {
     body: FreestyleDeployWebPayload;
@@ -266,13 +293,3 @@ export type HandleDeployWebData = {
 export type HandleDeployWebResponse = (FreestyleDeployWebSuccessResponse);
 
 export type HandleDeployWebError = (FreestyleDeployWebErrorResponse);
-
-export type HandleGetLogsData = {
-    path: {
-        id: string;
-    };
-};
-
-export type HandleGetLogsResponse = (Array<FreestyleLogResponseObject>);
-
-export type HandleGetLogsError = unknown;
