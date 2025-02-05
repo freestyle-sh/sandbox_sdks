@@ -281,6 +281,7 @@ export class FreestyleSandboxes {
     }
   }
 
+  /** Provision a wildcard certificate for domain. */
   async provisionWildcard(domain: string) {
     const response = await sandbox_openapi.handleVerifyWildcard({
       client: this.client,
