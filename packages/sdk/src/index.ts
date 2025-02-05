@@ -32,7 +32,7 @@ export class FreestyleSandboxes {
   async executeScript(
     script: string,
     config?: sandbox_openapi.FreestyleExecuteScriptParamsConfiguration
-  ): Promise<sandbox_openapi.FreestyleExecureScriptResultSuccess> {
+  ): Promise<sandbox_openapi.FreestyleExecuteScriptResultSuccess> {
     const response = await sandbox_openapi.handleExecuteScript({
       client: this.client,
       body: {
@@ -129,9 +129,12 @@ export class FreestyleSandboxes {
   async getWebLogs(id: string): Promise<sandbox_openapi.HandleGetLogsResponse> {
     const response = await sandbox_openapi.handleGetLogs({
       client: this.client,
-      path: {
-        id: id,
+      query: {
+        deploymentId: id,
       },
+      // path: {
+      //   id: id,
+      // },
     });
     if (response.data) {
       return response.data;
@@ -231,6 +234,49 @@ export class FreestyleSandboxes {
     } else {
       throw new Error(
         `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`
+      );
+    }
+  }
+
+  async listWebDeployments(): Promise<sandbox_openapi.HandleListWebDeploysResponse> {
+    const response = await sandbox_openapi.handleListWebDeploys({
+      client: this.client,
+    });
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(
+        "Failed to list web deployments\n" + response.error.message
+      );
+    }
+  }
+
+  async listExecuteRuns(): Promise<sandbox_openapi.HandleListExecuteRunsResponse> {
+    const response = await sandbox_openapi.handleListExecuteRuns({
+      client: this.client,
+    });
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error("Failed to list execute runs\n" + response.error.message);
+    }
+  }
+
+  async getExecuteRun(
+    id: string
+  ): Promise<sandbox_openapi.HandleGetExecuteRunResponse> {
+    const response = await sandbox_openapi.handleGetExecuteRun({
+      client: this.client,
+      path: {
+        deployment: id,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(
+        `Failed to get execute run with ID ${id}: ${response.error.message}`
       );
     }
   }

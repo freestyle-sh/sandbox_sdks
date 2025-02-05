@@ -165,6 +165,11 @@ export type FreestyleExecuteScriptParamsConfiguration = {
     peerDependencyResolution?: boolean;
 };
 
+export type FreestyleExecuteScriptResultSuccess = {
+    result: unknown;
+    logs: Array<FreestyleJavaScriptLog>;
+};
+
 export type FreestyleFile = {
     /**
      * The content of the file
