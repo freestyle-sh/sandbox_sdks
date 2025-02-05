@@ -121,12 +121,12 @@ export class FreestyleSandboxes {
   }
 
   /**
-   * Get logs for a sandbox.
+   * Get logs for an execute run, or web deployment.
    * @param id The ID of the sandbox.
    * @returns The logs for the sandbox.
    * @throws An error if the logs could not be retrieved.
    */
-  async getWebLogs(id: string): Promise<sandbox_openapi.HandleGetLogsResponse> {
+  async getLogs(id: string): Promise<sandbox_openapi.HandleGetLogsResponse> {
     const response = await sandbox_openapi.handleGetLogs({
       client: this.client,
       query: {
@@ -277,6 +277,23 @@ export class FreestyleSandboxes {
     } else {
       throw new Error(
         `Failed to get execute run with ID ${id}: ${response.error.message}`
+      );
+    }
+  }
+
+  async provisionWildcard(domain: string) {
+    const response = await sandbox_openapi.handleVerifyWildcard({
+      client: this.client,
+      path: {
+        domain,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(
+        `Failed to provision wildcard for domain ${domain}: ${response.error.message}`
       );
     }
   }
