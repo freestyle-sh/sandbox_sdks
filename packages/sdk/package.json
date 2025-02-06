@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -35,6 +35,16 @@
         "types": "./dist/mastra/index.d.mts",
         "default": "./dist/mastra/index.mjs"
       }
+    },
+    "./langgraph": {
+      "require": {
+        "types": "./dist/langgraph/index.d.cts",
+        "default": "./dist/langgraph/index.cjs"
+      },
+      "import": {
+        "types": "./dist/langgraph/index.d.mts",
+        "default": "./dist/langgraph/index.mjs"
+      }
     }
   },
   "scripts": {
@@ -51,6 +61,8 @@
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.5.7",
+    "@langchain/core": "^0.3.38",
+    "@langchain/langgraph": "^0.2.44",
     "@mastra/core": "^0.1.27-alpha.66",
     "ai": "^4.0.25",
     "humanlayer": "^0.7.0",
