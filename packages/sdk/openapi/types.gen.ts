@@ -17,12 +17,19 @@ export type DeploymentState = 'provisioning' | 'deployed' | 'failed';
 
 export type ExecuteLogEntry = {
     deployment: string;
-    account_id: string;
-    provisioned_at: string;
-    started_at?: (string) | null;
+    accountId: string;
+    provisionedAt: string;
+    startedAt?: (string) | null;
     duration?: (string) | null;
     state: ExecuteRunState;
-    env_vars: {
+    envVars: {
+        [key: string]: (string);
+    };
+};
+
+export type ExecuteRunInfo = {
+    code: string;
+    nodeModules: {
         [key: string]: (string);
     };
 };
@@ -307,7 +314,10 @@ export type HandleGetExecuteRunData = {
     };
 };
 
-export type HandleGetExecuteRunResponse = (ExecuteLogEntry);
+export type HandleGetExecuteRunResponse = ({
+    metadata: ExecuteLogEntry;
+    code: ExecuteRunInfo;
+});
 
 export type HandleGetExecuteRunError = ({
     message: string;
@@ -353,3 +363,9 @@ export type HandleListWebDeploysResponse = ({
 export type HandleListWebDeploysError = ({
     message: string;
 });
+
+export type HandleGetWebDeployDetailsData = {
+    path: {
+        deployment_id: string;
+    };
+};
