@@ -166,7 +166,7 @@ export const handleListWebDeploys = <ThrowOnError extends boolean = false>(optio
 };
 
 /**
- * Get web deploy by id
+ * Get information on web deploy
  * Get information about a web deploy by its ID.
  */
 export const handleGetWebDeployDetails = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<HandleGetWebDeployDetailsData, ThrowOnError>) => {

@@ -10,12 +10,12 @@ const codeExecutor = executeTool({
   nodeModules: {
     resend: "4.0.1",
     // stripe: "17.5.0",
-    // octokit: "4.1.0",
+    octokit: "4.1.0",
   },
   envVars: {
     RESEND_API_KEY: process.env.RESEND_API_KEY!,
     // STRIPE_API_KEY: process.env.STRIPE_API_KEY!,
-    // GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN!,
+    GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN!,
   },
 });
 
@@ -29,9 +29,10 @@ const { text, steps } = await generateText({
   tools: {
     codeExecutor: codeExecutor,
   },
-  maxSteps: 4,
+  maxSteps: 5,
   maxRetries: 0,
-  prompt: "What is the square root of the factorial of 17",
+  prompt:
+    "Get the last commit on the launchflow/launchflow org find out who made teh commit, send an email to josh@launchflow.com from ai@swerdlow.dev saying that person should get a raise. Include info about the commit like when it was.",
 });
 
 console.log(JSON.stringify(steps, null, 2));

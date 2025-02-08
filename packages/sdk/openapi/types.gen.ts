@@ -188,6 +188,10 @@ export type FreestyleFile = {
     encoding?: string;
 };
 
+export type FreestyleGetLogsResponse = {
+    logs: Array<FreestyleLogResponseObject>;
+};
+
 export type FreestyleJavaScriptLog = {
     /**
      * The log message
@@ -342,7 +346,7 @@ export type HandleGetLogsData = {
     };
 };
 
-export type HandleGetLogsResponse = (Array<FreestyleLogResponseObject>);
+export type HandleGetLogsResponse = (FreestyleGetLogsResponse);
 
 export type HandleGetLogsError = unknown;
 
