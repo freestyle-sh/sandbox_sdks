@@ -31,7 +31,7 @@ export class FreestyleSandboxes {
    */
   async executeScript(
     script: string,
-    config?: sandbox_openapi.FreestyleExecuteScriptParamsConfiguration,
+    config?: sandbox_openapi.FreestyleExecuteScriptParamsConfiguration
   ): Promise<sandbox_openapi.FreestyleExecuteScriptResultSuccess> {
     const response = await sandbox_openapi.handleExecuteScript({
       client: this.client,
@@ -46,8 +46,8 @@ export class FreestyleSandboxes {
     } else {
       throw new Error(
         `Failed to execute script: \n\n${script}\n\nError:\n\n${JSON.stringify(
-          response,
-        )}`,
+          response
+        )}`
       );
     }
   }
@@ -63,7 +63,7 @@ export class FreestyleSandboxes {
         encoding?: string;
       }
     >,
-    config?: sandbox_openapi.FreestyleDeployWebConfiguration,
+    config?: sandbox_openapi.FreestyleDeployWebConfiguration
   ): Promise<sandbox_openapi.FreestyleDeployWebSuccessResponse> {
     const response = await sandbox_openapi.handleDeployWeb({
       client: this.client,
@@ -76,7 +76,7 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`,
+        `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`
       );
     }
   }
@@ -85,7 +85,7 @@ export class FreestyleSandboxes {
    * Deploy a Cloudstate project to a sandbox.
    */
   async deployCloudstate(
-    body: sandbox_openapi.FreestyleCloudstateDeployRequest,
+    body: sandbox_openapi.FreestyleCloudstateDeployRequest
   ): Promise<sandbox_openapi.FreestyleCloudstateDeploySuccessResponse> {
     const response = await sandbox_openapi.handleDeployCloudstate({
       client: this.client,
@@ -105,7 +105,7 @@ export class FreestyleSandboxes {
    * @throws An error if the backup could not be retrieved.
    */
   async backupCloudstate(
-    id: string,
+    id: string
   ): Promise<sandbox_openapi.HandleBackupCloudstateResponse> {
     const response = await sandbox_openapi.handleBackupCloudstate({
       client: this.client,
@@ -149,7 +149,7 @@ export class FreestyleSandboxes {
    * @returns The domain verification token.
    */
   async createDomainVerificationRequest(
-    domain: string,
+    domain: string
   ): Promise<sandbox_openapi.HandleCreateDomainVerificationResponse> {
     const response = await sandbox_openapi.handleCreateDomainVerification({
       client: this.client,
@@ -161,7 +161,7 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        `Failed to create domain verification request for domain ${domain}: ${response.error.message}`,
+        `Failed to create domain verification request for domain ${domain}: ${response.error.message}`
       );
     }
   }
@@ -172,7 +172,7 @@ export class FreestyleSandboxes {
    * @returns The domain verification request.
    */
   async verifyDomain(
-    domain: string,
+    domain: string
   ): Promise<
     | sandbox_openapi.HandleVerifyDomainResponse
     | sandbox_openapi.HandleVerifyDomainError
@@ -187,7 +187,7 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        `Failed to verify domain ${domain}: ${response.error.message}`,
+        `Failed to verify domain ${domain}: ${response.error.message}`
       );
     }
   }
@@ -207,21 +207,20 @@ export class FreestyleSandboxes {
     const response = await sandbox_openapi.handleListDomainVerificationRequests(
       {
         client: this.client,
-      },
+      }
     );
     if (response.data) {
       return response.data;
     } else {
       throw new Error(
-        "Failed to list domain verification requests\n" +
-          response.error.message,
+        "Failed to list domain verification requests\n" + response.error.message
       );
     }
   }
 
   async deleteDomainVerificationRequest(
     domain: string,
-    verificationCode: string,
+    verificationCode: string
   ): Promise<sandbox_openapi.HandleDeleteDomainVerificationResponse> {
     const response = await sandbox_openapi.handleDeleteDomainVerification({
       client: this.client,
@@ -234,14 +233,14 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`,
+        `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`
       );
     }
   }
 
   async listWebDeployments(
     limit?: number,
-    offset?: number,
+    offset?: number
   ): Promise<sandbox_openapi.HandleListWebDeploysResponse> {
     const response = await sandbox_openapi.handleListWebDeploys({
       client: this.client,
@@ -254,14 +253,14 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        "Failed to list web deployments\n" + response.error.message,
+        "Failed to list web deployments\n" + response.error.message
       );
     }
   }
 
   async listExecuteRuns(
     limit?: number,
-    offset?: number,
+    offset?: number
   ): Promise<sandbox_openapi.HandleListExecuteRunsResponse> {
     const response = await sandbox_openapi.handleListExecuteRuns({
       client: this.client,
@@ -278,7 +277,7 @@ export class FreestyleSandboxes {
   }
 
   async getExecuteRun(
-    id: string,
+    id: string
   ): Promise<sandbox_openapi.HandleGetExecuteRunResponse> {
     const response = await sandbox_openapi.handleGetExecuteRun({
       client: this.client,
@@ -292,7 +291,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to get execute run with ID ${id}: ${response.error.message}`,
+      `Failed to get execute run with ID ${id}: ${response.error.message}`
     );
   }
 
@@ -302,7 +301,7 @@ export class FreestyleSandboxes {
    * @param name The name of the repository.
    */
   async createGitRepository(
-    name: string,
+    name: string
   ): Promise<sandbox_openapi.CreateRepoHandlerResponse> {
     const response = await sandbox_openapi.createRepoHandler({
       client: this.client,
@@ -314,7 +313,7 @@ export class FreestyleSandboxes {
       return response.data;
     }
     throw new Error(
-      `Failed to create git repository ${name}: ${response.error}`,
+      `Failed to create git repository ${name}: ${response.error}`
     );
   }
 
@@ -326,7 +325,7 @@ export class FreestyleSandboxes {
    */
   async listGitRepositories(
     limit?: number,
-    offset?: number,
+    offset?: number
   ): Promise<sandbox_openapi.ListRepositoriesHandlerResponse> {
     const response = await sandbox_openapi.listRepositoriesHandler({
       client: this.client,
@@ -347,7 +346,7 @@ export class FreestyleSandboxes {
    * @param repositoryId The ID of the repository to delete.
    */
   async deleteGitRepository(
-    repositoryId: string,
+    repositoryId: string
   ): Promise<sandbox_openapi.DeleteRepoHandlerResponse> {
     const response = await sandbox_openapi.deleteRepoHandler({
       client: this.client,
@@ -360,7 +359,7 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        `Failed to delete git repository ${repositoryId}: ${response.error}`,
+        `Failed to delete git repository ${repositoryId}: ${response.error}`
       );
     }
   }
@@ -378,7 +377,7 @@ export class FreestyleSandboxes {
       return response.data;
     } else {
       throw new Error(
-        `Failed to provision wildcard for domain ${domain}: ${response.error.message}`,
+        `Failed to provision wildcard for domain ${domain}: ${response.error.message}`
       );
     }
   }
