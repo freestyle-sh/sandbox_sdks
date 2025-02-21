@@ -160,9 +160,7 @@ export class FreestyleSandboxes {
     if (response.data) {
       return response.data;
     } else {
-      throw new Error(
-        `Failed to create domain verification request for domain ${domain}: ${response.error.message}`
-      );
+      throw new Error(response.error.message);
     }
   }
 
