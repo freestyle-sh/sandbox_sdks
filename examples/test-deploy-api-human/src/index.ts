@@ -3,6 +3,7 @@ import "dotenv/config";
 
 const api = new FreestyleSandboxes({
   apiKey: process.env.FREESTYLE_API_KEY!,
+  baseUrl: "localhost:8080",
 });
 
 api
@@ -22,11 +23,16 @@ const server = http.createServer(async(req, res) => {
 
 server.listen(3000, () => {
   console.log('Server is running at http://localhost:3000');
-});`,
+});
+
+// Log message every 100 milliseconds
+setInterval(() => {
+  console.log('Server is still running...');
+}, 100);`,
       },
     },
     {
-      domains: ["test68.style.dev"],
+      domains: ["testlog.style.dev"],
       // projectId: "5b949388-78ef-4cdd-830c-e9681dfa2aec.style.dev",
     }
   )

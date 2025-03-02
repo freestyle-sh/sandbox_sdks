@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.23",
+  "version": "0.0.25",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -65,6 +65,7 @@
     "@langchain/langgraph": "^0.2.44",
     "@mastra/core": "^0.1.27-alpha.66",
     "ai": "^4.0.25",
+    "glob": "^11.0.1",
     "humanlayer": "^0.7.0",
     "openai": "^4.77.3",
     "openapi": "^1.0.1",
