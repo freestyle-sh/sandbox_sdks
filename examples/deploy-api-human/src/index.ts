@@ -1,41 +1,19 @@
 import { FreestyleSandboxes } from "freestyle-sandboxes";
+import { prepareDirForDeploymentSync } from "freestyle-sandboxes/utils";
 import "dotenv/config";
 
 const api = new FreestyleSandboxes({
   apiKey: process.env.FREESTYLE_API_KEY!,
-  baseUrl: "localhost:8080",
+  // baseUrl: "localhost:8080",
 });
 
+console.log(prepareDirForDeploymentSync("test-site"));
 api
-  .deployWeb(
-    {
-      "index.js": {
-        content: `
-import http from 'node:http';
-console.log('starting server');
-
-const server = http.createServer(async(req, res) => {
-  // wait 5 seconds before responding
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Welcome to SF its been waiting for you');
-});
-
-server.listen(3000, () => {
-  console.log('Server is running at http://localhost:3000');
-});
-
-// Log message every 100 milliseconds
-setInterval(() => {
-  console.log('Server is still running...');
-}, 100);`,
-      },
-    },
-    {
-      domains: ["testlog.style.dev"],
-      // projectId: "5b949388-78ef-4cdd-830c-e9681dfa2aec.style.dev",
-    }
-  )
+  .deployWeb(prepareDirForDeploymentSync("test-sites/simple"), {
+    domains: ["testsitesimple.style.dev"],
+    entrypoint: "index.ts",
+    // projectId: "5b949388-78ef-4cdd-830c-e9681dfa2aec.style.dev",
+  })
   .then((result) => {
-    console.log("Deployed website @ ", result.projectId);
+    console.log("Deployed website @ ", result.domains);
   });

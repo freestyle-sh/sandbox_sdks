@@ -1,0 +1,19 @@
+{
+  "name": "test-site",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@whatwg-node/server": "^0.10.0",
+    "itty-router": "^5.0.18"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9"
+  }
+}
