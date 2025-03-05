@@ -1,7 +1,7 @@
 import { executeTool } from "freestyle-sandboxes/ai";
 import { FreestyleSandboxes } from "freestyle-sandboxes";
 import { generateText } from "ai";
-import "dotenv/config.js";
+import "dotenv/config";
 import { createOpenAI } from "@ai-sdk/openai";
 import { githubdocs } from "./github_docs";
 
@@ -32,7 +32,7 @@ const { text, steps } = await generateText({
   maxSteps: 5,
   maxRetries: 0,
   prompt:
-    "Get the last commit on the launchflow/launchflow org find out who made teh commit, send an email to josh@launchflow.com from ai@swerdlow.dev saying that person should get a raise. Include info about the commit like when it was.",
+    "Send a yo mamma joke to someone@something.com from ai@swerdlow.dev with a yo mamma joke about python data analysis.",
 });
 
 console.log(JSON.stringify(steps, null, 2));
