@@ -1,6 +1,66 @@
 import { type Client, createClient } from "@hey-api/client-fetch";
 import * as sandbox_openapi from "../openapi/index.ts";
 
+import {
+  AccessLevel,
+  CreatedToken,
+  CreateRepositoryResponseSuccess,
+  DescribePermissionResponseSuccess,
+  FreestyleCloudstateDeployRequest,
+  FreestyleCloudstateDeploySuccessResponse,
+  FreestyleDeployWebConfiguration,
+  FreestyleDeployWebSuccessResponse,
+  FreestyleExecuteScriptParamsConfiguration,
+  FreestyleExecuteScriptResultSuccess,
+  GitIdentity,
+  HandleBackupCloudstateResponse,
+  HandleCreateDomainVerificationResponse,
+  HandleDeleteDomainVerificationResponse,
+  HandleDeleteIdentityResponse,
+  HandleDeleteRepoResponse,
+  HandleGetExecuteRunResponse,
+  HandleGetLogsResponse,
+  HandleListDomainsResponse,
+  HandleListDomainVerificationRequestsResponse,
+  HandleListExecuteRunsResponse,
+  HandleListRepositoriesResponse,
+  HandleListWebDeploysResponse,
+  HandleVerifyDomainError,
+  HandleVerifyDomainResponse,
+  ListGitTokensResponseSuccess,
+  ListPermissionResponseSuccess,
+} from "../openapi/index.ts";
+
+export {
+  AccessLevel,
+  CreatedToken,
+  CreateRepositoryResponseSuccess,
+  DescribePermissionResponseSuccess,
+  FreestyleCloudstateDeployRequest,
+  FreestyleCloudstateDeploySuccessResponse,
+  FreestyleDeployWebConfiguration,
+  FreestyleDeployWebSuccessResponse,
+  FreestyleExecuteScriptParamsConfiguration,
+  FreestyleExecuteScriptResultSuccess,
+  GitIdentity,
+  HandleBackupCloudstateResponse,
+  HandleCreateDomainVerificationResponse,
+  HandleDeleteDomainVerificationResponse,
+  HandleDeleteIdentityResponse,
+  HandleDeleteRepoResponse,
+  HandleGetExecuteRunResponse,
+  HandleGetLogsResponse,
+  HandleListDomainsResponse,
+  HandleListDomainVerificationRequestsResponse,
+  HandleListExecuteRunsResponse,
+  HandleListRepositoriesResponse,
+  HandleListWebDeploysResponse,
+  HandleVerifyDomainError,
+  HandleVerifyDomainResponse,
+  ListGitTokensResponseSuccess,
+  ListPermissionResponseSuccess,
+};
+
 export class FreestyleSandboxes {
   private client: Client;
   constructor(options: {
@@ -31,8 +91,8 @@ export class FreestyleSandboxes {
    */
   async executeScript(
     script: string,
-    config?: sandbox_openapi.FreestyleExecuteScriptParamsConfiguration,
-  ): Promise<sandbox_openapi.FreestyleExecuteScriptResultSuccess> {
+    config?: FreestyleExecuteScriptParamsConfiguration,
+  ): Promise<FreestyleExecuteScriptResultSuccess> {
     const response = await sandbox_openapi.handleExecuteScript({
       client: this.client,
       body: {
@@ -62,8 +122,8 @@ export class FreestyleSandboxes {
         encoding?: string;
       }
     >,
-    config?: sandbox_openapi.FreestyleDeployWebConfiguration,
-  ): Promise<sandbox_openapi.FreestyleDeployWebSuccessResponse> {
+    config?: FreestyleDeployWebConfiguration,
+  ): Promise<FreestyleDeployWebSuccessResponse> {
     const response = await sandbox_openapi.handleDeployWeb({
       client: this.client,
       body: {
@@ -83,8 +143,8 @@ export class FreestyleSandboxes {
    * Deploy a Cloudstate project to a sandbox.
    */
   async deployCloudstate(
-    body: sandbox_openapi.FreestyleCloudstateDeployRequest,
-  ): Promise<sandbox_openapi.FreestyleCloudstateDeploySuccessResponse> {
+    body: FreestyleCloudstateDeployRequest,
+  ): Promise<FreestyleCloudstateDeploySuccessResponse> {
     const response = await sandbox_openapi.handleDeployCloudstate({
       client: this.client,
       body: body,
@@ -103,9 +163,7 @@ export class FreestyleSandboxes {
    * @returns The backup of the Cloudstate project.
    * @throws An error if the backup could not be retrieved.
    */
-  async backupCloudstate(
-    id: string,
-  ): Promise<sandbox_openapi.HandleBackupCloudstateResponse> {
+  async backupCloudstate(id: string): Promise<HandleBackupCloudstateResponse> {
     const response = await sandbox_openapi.handleBackupCloudstate({
       client: this.client,
       path: {
@@ -126,7 +184,7 @@ export class FreestyleSandboxes {
    * @returns The logs for the sandbox.
    * @throws An error if the logs could not be retrieved.
    */
-  async getLogs(id: string): Promise<sandbox_openapi.HandleGetLogsResponse> {
+  async getLogs(id: string): Promise<HandleGetLogsResponse> {
     const response = await sandbox_openapi.handleGetLogs({
       client: this.client,
       query: {
@@ -149,7 +207,7 @@ export class FreestyleSandboxes {
    */
   async createDomainVerificationRequest(
     domain: string,
-  ): Promise<sandbox_openapi.HandleCreateDomainVerificationResponse> {
+  ): Promise<HandleCreateDomainVerificationResponse> {
     const response = await sandbox_openapi.handleCreateDomainVerification({
       client: this.client,
       body: {
@@ -170,10 +228,7 @@ export class FreestyleSandboxes {
    */
   async verifyDomain(
     domain: string,
-  ): Promise<
-    | sandbox_openapi.HandleVerifyDomainResponse
-    | sandbox_openapi.HandleVerifyDomainError
-  > {
+  ): Promise<HandleVerifyDomainResponse | HandleVerifyDomainError> {
     const response = await sandbox_openapi.handleVerifyDomain({
       client: this.client,
       body: {
@@ -188,7 +243,7 @@ export class FreestyleSandboxes {
     );
   }
 
-  async listDomains(): Promise<sandbox_openapi.HandleListDomainsResponse> {
+  async listDomains(): Promise<HandleListDomainsResponse> {
     const response = await sandbox_openapi.handleListDomains({
       client: this.client,
     });
@@ -199,7 +254,7 @@ export class FreestyleSandboxes {
     throw new Error(`Failed to list domains\n${response.error.message}`);
   }
 
-  async listDomainVerificationRequests(): Promise<sandbox_openapi.HandleListDomainVerificationRequestsResponse> {
+  async listDomainVerificationRequests(): Promise<HandleListDomainVerificationRequestsResponse> {
     const response = await sandbox_openapi.handleListDomainVerificationRequests(
       {
         client: this.client,
@@ -217,7 +272,7 @@ export class FreestyleSandboxes {
   async deleteDomainVerificationRequest(
     domain: string,
     verificationCode: string,
-  ): Promise<sandbox_openapi.HandleDeleteDomainVerificationResponse> {
+  ): Promise<HandleDeleteDomainVerificationResponse> {
     const response = await sandbox_openapi.handleDeleteDomainVerification({
       client: this.client,
       body: {
@@ -237,7 +292,7 @@ export class FreestyleSandboxes {
   async listWebDeployments(
     limit?: number,
     offset?: number,
-  ): Promise<sandbox_openapi.HandleListWebDeploysResponse> {
+  ): Promise<HandleListWebDeploysResponse> {
     const response = await sandbox_openapi.handleListWebDeploys({
       client: this.client,
       query: {
@@ -258,7 +313,7 @@ export class FreestyleSandboxes {
   async listExecuteRuns(
     limit?: number,
     offset?: number,
-  ): Promise<sandbox_openapi.HandleListExecuteRunsResponse> {
+  ): Promise<HandleListExecuteRunsResponse> {
     const response = await sandbox_openapi.handleListExecuteRuns({
       client: this.client,
       query: {
@@ -272,9 +327,7 @@ export class FreestyleSandboxes {
     throw new Error(`Failed to list execute runs\n${response.error.message}`);
   }
 
-  async getExecuteRun(
-    id: string,
-  ): Promise<sandbox_openapi.HandleGetExecuteRunResponse> {
+  async getExecuteRun(id: string): Promise<HandleGetExecuteRunResponse> {
     const response = await sandbox_openapi.handleGetExecuteRun({
       client: this.client,
       path: {
@@ -291,6 +344,24 @@ export class FreestyleSandboxes {
     );
   }
 
+  /** Provision a wildcard certificate for domain. */
+  async provisionWildcard(domain: string) {
+    const response = await sandbox_openapi.handleVerifyWildcard({
+      client: this.client,
+      path: {
+        domain,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to provision wildcard for domain ${domain}: ${response.error.message}`,
+    );
+  }
+
   /**
    * Create a new git repository.
    *
@@ -298,7 +369,7 @@ export class FreestyleSandboxes {
    */
   async createGitRepository(
     name: string,
-  ): Promise<sandbox_openapi.CreateRepositoryResponseSuccess> {
+  ): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,
       body: {
@@ -324,7 +395,7 @@ export class FreestyleSandboxes {
   async listGitRepositories(
     limit?: number,
     offset?: number,
-  ): Promise<sandbox_openapi.HandleListRepositoriesResponse> {
+  ): Promise<HandleListRepositoriesResponse> {
     const response = await sandbox_openapi.handleListRepositories({
       client: this.client,
       query: {
@@ -347,7 +418,7 @@ export class FreestyleSandboxes {
    */
   async deleteGitRepository(
     repositoryId: string,
-  ): Promise<sandbox_openapi.HandleDeleteRepoResponse> {
+  ): Promise<HandleDeleteRepoResponse> {
     const response = await sandbox_openapi.handleDeleteRepo({
       client: this.client,
       path: {
@@ -364,12 +435,63 @@ export class FreestyleSandboxes {
     );
   }
 
-  /** Provision a wildcard certificate for domain. */
-  async provisionWildcard(domain: string) {
-    const response = await sandbox_openapi.handleVerifyWildcard({
+  /**
+   * Create a new git identity.
+   */
+  async createGitIdentity(): Promise<GitIdentity> {
+    const response = await sandbox_openapi.handleCreateIdentity({
+      client: this.client,
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(`Failed to create git identity: ${response.error}`);
+  }
+
+  /**
+   * Delete a git identity.
+   *
+   * @param identityId The ID of the identity to delete.
+   */
+  async deleteGitIdentity(
+    identityId: string,
+  ): Promise<HandleDeleteIdentityResponse> {
+    const response = await sandbox_openapi.handleDeleteIdentity({
       client: this.client,
       path: {
-        domain,
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(`Failed to delete git identity: ${response.error}`);
+  }
+
+  /**
+   * Grant a git identity access to a repository.
+   *
+   * @param repoId The ID of the repository to grant access to.
+   * @param identityId The ID of the identity grant access to `repoId`.
+   * @param permission The permission to grant.
+   */
+  async grantGitPermission(
+    repoId: string,
+    identityId: string,
+    permission: AccessLevel,
+  ) {
+    const response = await sandbox_openapi.handleGrantPermission({
+      client: this.client,
+      path: {
+        repo: repoId,
+        identity: identityId,
+      },
+      body: {
+        permission,
       },
     });
 
@@ -378,7 +500,189 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to provision wildcard for domain ${domain}: ${response.error.message}`,
+      `Failed to grant access to git identity ${identityId} for repository ${repoId}: ${response.error}`,
+    );
+  }
+
+  /**
+   * Update a git identity's permissions on a repository.
+   *
+   * @param repoId The ID of the repository to update permissions for.
+   * @param identityId The ID of the identity to whose access to update.
+   * @param permission The permission to grant.
+   */
+  async updateGitPermission(
+    repoId: string,
+    identityId: string,
+    permission: AccessLevel,
+  ): Promise<void> {
+    const response = await sandbox_openapi.handleUpdatePermission({
+      client: this.client,
+      path: {
+        repo: repoId,
+        identity: identityId,
+      },
+      body: {
+        permission,
+      },
+    });
+
+    if (response.data) {
+      return;
+    }
+
+    throw new Error(
+      `Failed to update permission for git identity ${identityId} for repository ${repoId}: ${response.error}`,
+    );
+  }
+
+  /**
+   * Revoke a git identity's access to a repository.
+   *
+   * @param repoId The ID of the repository revoke access to.
+   * @param identityId The ID of the identity to revoke access from.
+   */
+  async revokeGitPermission(repoId: string, identityId: string): Promise<void> {
+    const response = await sandbox_openapi.handleRevokePermission({
+      client: this.client,
+      path: {
+        repo: repoId,
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return;
+    }
+
+    throw new Error(
+      `Failed to revoke access to git identity ${identityId} for repository ${repoId}: ${response.error}`,
+    );
+  }
+
+  /**
+   * List access permissions for a git identity.
+   *
+   * @param identityId The ID of the identity to list permissions for.
+   */
+  async listGitPermissions(
+    identityId: string,
+  ): Promise<ListPermissionResponseSuccess> {
+    const response = await sandbox_openapi.handleListPermissions({
+      client: this.client,
+      path: {
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to list permissions for git identity ${identityId}: ${response.error}`,
+    );
+  }
+
+  /**
+   * Get the permission of a git identity on a repository.
+   *
+   * @param repoId The ID of the repository to check permissions for.
+   * @param identityId The ID of the identity to check permissions for.
+   */
+  async getGitPermission(
+    repoId: string,
+    identityId: string,
+  ): Promise<DescribePermissionResponseSuccess> {
+    const response = await sandbox_openapi.handleDescribePermission({
+      client: this.client,
+      path: {
+        repo: repoId,
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to get permission for git identity ${identityId} on repository ${repoId}: ${response.error}`,
+    );
+  }
+
+  /**
+   * Create a new git access token for an identity.
+   *
+   * @param identityId The ID of the identity to create the token for.
+   */
+  async createGitAccessToken(identityId: string): Promise<CreatedToken> {
+    const response = await sandbox_openapi.handleCreateGitToken({
+      client: this.client,
+      path: {
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to create git access token: ${response.error.message}`,
+    );
+  }
+
+  /**
+   * Revoke a git access token.
+   *
+   * @param identityId The ID of the identity the token belongs to.
+   * @param tokenId The ID of the token to revoke.
+   */
+  async revokeGitAccessToken(
+    identityId: string,
+    tokenId: string,
+  ): Promise<void> {
+    const response = await sandbox_openapi.handleRevokeGitToken({
+      client: this.client,
+      body: {
+        tokenId,
+      },
+      path: {
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return;
+    }
+
+    throw new Error(
+      `Failed to revoke git access token ${tokenId}: ${response.error.message}`,
+    );
+  }
+
+  /**
+   * List git access tokens for an identity.
+   *
+   * @param identityId The ID of the identity to list tokens for.
+   */
+  async listGitAccessTokens(
+    identityId: string,
+  ): Promise<ListGitTokensResponseSuccess> {
+    const response = await sandbox_openapi.handleListGitTokens({
+      client: this.client,
+      path: {
+        identity: identityId,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to list git access tokens: ${response.error.message}`,
     );
   }
 }
