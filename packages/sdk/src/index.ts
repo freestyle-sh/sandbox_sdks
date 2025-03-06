@@ -1,7 +1,7 @@
 import { type Client, createClient } from "@hey-api/client-fetch";
 import * as sandbox_openapi from "../openapi/index.ts";
 
-import {
+import type {
   AccessLevel,
   CreatedToken,
   CreateRepositoryResponseSuccess,
@@ -31,7 +31,7 @@ import {
   ListPermissionResponseSuccess,
 } from "../openapi/index.ts";
 
-export {
+export type {
   AccessLevel,
   CreatedToken,
   CreateRepositoryResponseSuccess,
@@ -59,7 +59,7 @@ export {
   HandleVerifyDomainResponse,
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
-};
+} from "../openapi/index.ts";
 
 export class FreestyleSandboxes {
   private client: Client;
