@@ -62,7 +62,10 @@ export const executeTool = (
         return res;
       } catch (e) {
         console.log("ERROR: ", e.message);
-        return `Error executing script:\n\n${script}\n\nError: ${e.message}`;
+        return {
+          message: e.message,
+          error: e.error,
+        };
       }
     },
   });

@@ -6,8 +6,8 @@ const api = new FreestyleSandboxes({
   apiKey: process.env.FREESTYLE_API_KEY!,
   // baseUrl: "localhost:8080",
 });
-
 console.log(prepareDirForDeploymentSync("test-site"));
+
 api
   .deployWeb(prepareDirForDeploymentSync("test-sites/simple"), {
     domains: ["testsitesimple.style.dev"],
