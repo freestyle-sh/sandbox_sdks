@@ -7,11 +7,11 @@ import { FreestyleSandboxes } from "..";
 export const executeTool = (
   config: FreestyleExecuteScriptParamsConfiguration & {
     apiKey: string;
-  },
+  }
 ) => {
   const description = executeCodeDescription(
     Object.keys(config.envVars ?? {}).join(", "),
-    Object.keys(config.nodeModules ?? {}).join(", "),
+    Object.keys(config.nodeModules ?? {}).join(", ")
   );
 
   const client = new FreestyleSandboxes({
@@ -30,7 +30,7 @@ export const executeTool = (
         z.object({
           message: z.string(),
           type: z.string(),
-        }),
+        })
       ),
       result: z.unknown(),
     }),

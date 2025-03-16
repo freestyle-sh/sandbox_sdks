@@ -238,6 +238,12 @@ export type FreestyleExecuteScriptParamsConfiguration = {
      */
     peerDependencyResolution?: boolean;
     networkPermissions?: Array<FreestyleNetworkPermission> | null;
+    /**
+     * These headers will be added to every fetch request made through the script
+     */
+    customHeaders?: {
+        [key: string]: (string);
+    };
 };
 
 export type FreestyleExecuteScriptResultSuccess = {
