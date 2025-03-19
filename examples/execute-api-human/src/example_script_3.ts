@@ -1,3 +1,7 @@
-export default `export default () => {
-    return process.env.RESEND_API_KEY;
+export default `
+import Exa from "exa-js"
+
+export default () => {
+  console.log(Exa)
+return 0
   };`;

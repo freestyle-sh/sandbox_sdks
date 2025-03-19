@@ -133,19 +133,13 @@ export class FreestyleSandboxes {
    * Deploy a Web project to a sandbox.
    */
   async deployWeb(
-    files: Record<
-      string,
-      {
-        content: string;
-        encoding?: string;
-      }
-    >,
+    source: sandbox_openapi.DeploymentSource,
     config?: FreestyleDeployWebConfiguration
   ): Promise<FreestyleDeployWebSuccessResponse> {
-    const response = await sandbox_openapi.handleDeployWeb({
+    const response = await sandbox_openapi.handleDeployWebV2({
       client: this.client,
       body: {
-        files,
+        source: source,
         config: config,
       },
     });

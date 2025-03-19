@@ -112,7 +112,13 @@ export const deployWebTool = (
         return acc;
       }, {} as Record<string, { content: string }>);
       try {
-        const res = await api.deployWeb(new_files, config);
+        const res = await api.deployWeb(
+          {
+            kind: "files",
+            files: new_files,
+          },
+          config
+        );
         return res;
       } catch (e) {
         console.log("ERROR: ", e.message);

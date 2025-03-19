@@ -54,6 +54,18 @@ export type DeploymentLogEntry = {
     };
 };
 
+export type DeploymentSource = {
+    files: {
+        [key: string]: FreestyleFile;
+    };
+    kind: 'files';
+} | {
+    url: string;
+    kind: 'tar';
+};
+
+export type kind = 'files';
+
 export type DeploymentState = 'provisioning' | 'deployed' | 'failed';
 
 export type DescribePermissionResponseSuccess = {
@@ -188,6 +200,16 @@ export type FreestyleDeployWebPayload = {
     config?: FreestyleDeployWebConfiguration;
 };
 
+export type FreestyleDeployWebPayloadV2 = {
+    /**
+     * The files to deploy, a map of file paths to file contents, e.g. { \"index.js\": {\"content\": \"your main\", \"encoding\": \"utf-8\"}, \"file2.js\": {\"content\": \"your helper\" } }
+     *
+     * **Do not include node modules in this bundle, they will not work**. Instead, includes a package-lock.json, bun.lockb, pnpm-lock.yaml, or yarn.lock, the node modules for the project will be installed from that lock file, or use the node_modules field in the configuration to specify the node modules to install.
+     */
+    source: DeploymentSource;
+    config?: FreestyleDeployWebConfiguration;
+};
+
 export type FreestyleDeployWebSuccessResponse = {
     deploymentId: string;
     domains?: Array<(string)> | null;
@@ -195,6 +217,11 @@ export type FreestyleDeployWebSuccessResponse = {
      * @deprecated
      */
     projectId?: (string) | null;
+};
+
+export type FreestyleDeployWebSuccessResponseV2 = {
+    deploymentId: string;
+    domains?: Array<(string)> | null;
 };
 
 export type FreestyleDomainVerificationRequest = {
@@ -574,6 +601,7 @@ export type HandleExecuteScriptResponse = ({
 
 export type HandleExecuteScriptError = ({
     error: string;
+    logs?: Array<FreestyleJavaScriptLog> | null;
 });
 
 export type HandleCreateIdentityResponse = (GitIdentity);
@@ -854,6 +882,14 @@ export type HandleDeployWebData = {
 export type HandleDeployWebResponse = (FreestyleDeployWebSuccessResponse);
 
 export type HandleDeployWebError = (FreestyleDeployWebErrorResponse);
+
+export type HandleDeployWebV2Data = {
+    body: FreestyleDeployWebPayloadV2;
+};
+
+export type HandleDeployWebV2Response = (FreestyleDeployWebSuccessResponseV2);
+
+export type HandleDeployWebV2Error = (FreestyleDeployWebErrorResponse);
 
 export type HandleListWebDeploysData = {
     query: {

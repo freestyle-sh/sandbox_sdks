@@ -11,15 +11,15 @@ dotenv.config();
 const api = new sdk.FreestyleSandboxes({
   // apiKey: process.env.FREESTYLE_API_KEY!,
   apiKey: "WYuThS7U6V1HxQYaR9yJso-H9Wh1JbNhR3iXqjRky78Nafqx5uK6b9JZYB1LXi2pNgP",
-  // baseUrl: "localhost:8080",
+  baseUrl: "localhost:8080",
   // baseUrl: "localhost:8080",
 });
 
 api
   .executeScript(example_script, {
     nodeModules: {
-      resend: "4.0.1",
-      stripe: "17.5.0",
+      "exa-js": "1.5.12",
+      resend: "4.1.2",
     },
     envVars: {
       RESEND_API_KEY: process.env.RESEND_API_KEY!,
