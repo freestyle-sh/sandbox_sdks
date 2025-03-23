@@ -10,7 +10,7 @@ dotenv.config();
 
 const api = new sdk.FreestyleSandboxes({
   // apiKey: process.env.FREESTYLE_API_KEY!,
-  apiKey: "WYuThS7U6V1HxQYaR9yJso-H9Wh1JbNhR3iXqjRky78Nafqx5uK6b9JZYB1LXi2pNgP",
+  apiKey: "Sp4Fcez9VzeuTH1nSLCe91-3b9RMdHEpgK4whtjS5ofthGrTuWgYgn6ToYRPDnReSLx",
   baseUrl: "localhost:8080",
   // baseUrl: "localhost:8080",
 });
@@ -18,8 +18,9 @@ const api = new sdk.FreestyleSandboxes({
 api
   .executeScript(example_script, {
     nodeModules: {
-      "exa-js": "1.5.12",
       resend: "4.1.2",
+      react: "19.0.0",
+      "react-dom": "19.0.0",
     },
     envVars: {
       RESEND_API_KEY: process.env.RESEND_API_KEY!,
