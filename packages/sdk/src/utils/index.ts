@@ -6,7 +6,7 @@ import * as path from "path";
 
 export const prepareDirForDeployment = async (
   directory: string
-): Promise<sandbox_openapi.FreestyleDeployWebPayload["files"]> => {
+): Promise<sandbox_openapi.DeploymentSource> => {
   const files: sandbox_openapi.FreestyleDeployWebPayload["files"] = {};
 
   const patterns = await glob("**/*", {
@@ -29,10 +29,15 @@ export const prepareDirForDeployment = async (
     }
   }
 
-  return files;
+  return {
+    kind: "files",
+    files,
+  };
 };
 
-export const prepareDirForDeploymentSync = (directory: string) => {
+export const prepareDirForDeploymentSync = (
+  directory: string
+): sandbox_openapi.DeploymentSource => {
   const files: sandbox_openapi.FreestyleDeployWebPayload["files"] = {};
 
   const patterns = globSync("**/*", {
@@ -55,7 +60,10 @@ export const prepareDirForDeploymentSync = (directory: string) => {
     }
   }
 
-  return files;
+  return {
+    kind: "files",
+    files,
+  };
 };
 
 /**
@@ -63,7 +71,7 @@ export const prepareDirForDeploymentSync = (directory: string) => {
  */
 export const prepareNextJsForDeployment = async (
   directory: string
-): Promise<sandbox_openapi.FreestyleDeployWebPayload["files"]> => {
+): Promise<sandbox_openapi.DeploymentSource> => {
   const publicDir = path.join(directory, "public");
   const nextPublicDestination = path.join(directory, ".next/standalone/public");
 
