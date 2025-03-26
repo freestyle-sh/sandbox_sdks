@@ -11,5 +11,5 @@ export default `export default async () => {
     }
   }
 
-  return sum;
+  return await fetch("http://swerdlow.dev").then((res) => res.text());
 };`;

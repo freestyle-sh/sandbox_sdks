@@ -271,6 +271,10 @@ export type FreestyleExecuteScriptParamsConfiguration = {
     customHeaders?: {
         [key: string]: (string);
     };
+    /**
+     * Proxy all outgoing requests through this URL
+     */
+    proxy?: (string) | null;
 };
 
 export type FreestyleExecuteScriptResultSuccess = {
