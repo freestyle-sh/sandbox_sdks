@@ -1,7 +1,12 @@
-import { FreestyleExecuteScriptParamsConfiguration } from "../../openapi";
+import {
+  FreestyleExecuteScriptParamsConfiguration,
+  FreestyleExecuteScriptResultSuccess,
+  HandleExecuteScriptError,
+} from "../../openapi";
 import { FreestyleSandboxes } from "..";
 import { tool } from "ai";
 import { z } from "zod";
+import { P } from "../../dist/types.gen-BuhQ5LpB";
 
 export const executeCodeSchema = z.object({
   script: z.string().describe(`
@@ -40,11 +45,19 @@ export const executeCodeDescription = (envVars: string, nodeModules: string) =>
  *
  * @param config - Configuration for the tool
  * @param config.apiKey - The API key to use
- *
+ * @param {Function} [config.onResult] - Optional callback function to handle the result.
+ * @param {boolean} [config.truncateOutput=false] - Whether to truncate the result to 1000 characters and truncate individual logs to the first 250 characters; useful to prevent long outputs from filling the context window.
  */
 export const executeTool = (
   config: FreestyleExecuteScriptParamsConfiguration & {
     apiKey: string;
+    onResult?: (_v: {
+      input: {
+        script: string;
+      } & Record<string, unknown>;
+      result: FreestyleExecuteScriptResultSuccess | HandleExecuteScriptError;
+    }) => void | Promise<void>;
+    truncateOutput?: boolean;
   }
 ) => {
   const api = new FreestyleSandboxes({
@@ -56,9 +69,24 @@ export const executeTool = (
   return tool({
     description: executeCodeDescription(envVars, nodeModules),
     parameters: executeCodeSchema,
-    execute: async ({ script }) => {
+    execute: async ({ script, ...otherParams }) => {
       try {
         const res = await api.executeScript(script, config);
+        if (config.onResult) {
+          await config.onResult({
+            result: res,
+            input: {
+              script,
+              ...otherParams,
+            },
+          });
+        }
+        if (config.truncateOutput) {
+          if ("output" in res) {
+            res.result = JSON.stringify(res.result).slice(0, 1000);
+            res.logs = res.logs.slice(0, 1000);
+          }
+        }
         return res;
       } catch (e) {
         console.log("ERROR: ", e.message);

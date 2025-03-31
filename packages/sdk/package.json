@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.34",
+  "version": "0.0.37",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -67,16 +67,16 @@
   "description": "",
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.60.1",
-    "pkgroll": "^2.6.0"
-  },
-  "dependencies": {
-    "@hey-api/client-fetch": "^0.5.7",
+    "pkgroll": "^2.6.0",
     "@langchain/core": "^0.3.38",
     "@langchain/langgraph": "^0.2.44",
     "@mastra/core": "^0.6.0",
     "ai": "^4.0.25",
+    "humanlayer": "^0.7.0"
+  },
+  "dependencies": {
+    "@hey-api/client-fetch": "^0.5.7",
     "glob": "^11.0.1",
-    "humanlayer": "^0.7.0",
     "openai": "^4.77.3",
     "openapi": "^1.0.1",
     "zod": "^3.24.1"
