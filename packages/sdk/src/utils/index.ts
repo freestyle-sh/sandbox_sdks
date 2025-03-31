@@ -14,6 +14,7 @@ export const prepareDirForDeployment = async (
     nodir: true,
     ignore: ["**/node_modules/**"],
     absolute: false,
+    posix: true
   });
 
   for (const relativePath of patterns) {
@@ -45,6 +46,7 @@ export const prepareDirForDeploymentSync = (
     nodir: true,
     ignore: ["**/node_modules/**"],
     absolute: false,
+    posix: true,
   });
 
   for (const relativePath of patterns) {
