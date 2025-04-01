@@ -52,6 +52,7 @@ export const executeTool = (
   config: FreestyleExecuteScriptParamsConfiguration & {
     apiKey: string;
     onResult?: (_v: {
+      toolCallId: string;
       input: {
         script: string;
       } & Record<string, unknown>;
@@ -69,11 +70,12 @@ export const executeTool = (
   return tool({
     description: executeCodeDescription(envVars, nodeModules),
     parameters: executeCodeSchema,
-    execute: async ({ script, ...otherParams }) => {
+    execute: async ({ script, ...otherParams }, { toolCallId }) => {
       try {
         const res = await api.executeScript(script, config);
         if (config.onResult) {
           await config.onResult({
+            toolCallId,
             result: res,
             input: {
               script,
