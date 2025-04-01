@@ -55,7 +55,8 @@ export const executeTool = (
       toolCallId: string;
       input: {
         script: string;
-      } & Record<string, unknown>;
+        [key: string]: unknown;
+      };
       result: FreestyleExecuteScriptResultSuccess | HandleExecuteScriptError;
     }) => void | Promise<void>;
     truncateOutput?: boolean;
