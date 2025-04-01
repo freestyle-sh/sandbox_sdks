@@ -6,7 +6,6 @@ import {
 import { FreestyleSandboxes } from "..";
 import { tool } from "ai";
 import { z } from "zod";
-import { P } from "../../dist/types.gen-BuhQ5LpB";
 
 export const executeCodeSchema = z.object({
   script: z.string().describe(`
