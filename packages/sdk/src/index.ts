@@ -9,7 +9,7 @@ import type {
   FreestyleCloudstateDeployRequest,
   FreestyleCloudstateDeploySuccessResponse,
   FreestyleDeployWebConfiguration,
-  FreestyleDeployWebSuccessResponse,
+  FreestyleDeployWebSuccessResponseV2,
   FreestyleExecuteScriptParamsConfiguration,
   FreestyleExecuteScriptResultSuccess,
   GitIdentity,
@@ -39,7 +39,7 @@ export type {
   FreestyleCloudstateDeployRequest,
   FreestyleCloudstateDeploySuccessResponse,
   FreestyleDeployWebConfiguration,
-  FreestyleDeployWebSuccessResponse,
+  FreestyleDeployWebSuccessResponseV2,
   FreestyleExecuteScriptParamsConfiguration,
   FreestyleExecuteScriptResultSuccess,
   GitIdentity,
@@ -135,7 +135,7 @@ export class FreestyleSandboxes {
   async deployWeb(
     source: sandbox_openapi.DeploymentSource,
     config?: FreestyleDeployWebConfiguration
-  ): Promise<FreestyleDeployWebSuccessResponse> {
+  ): Promise<FreestyleDeployWebSuccessResponseV2> {
     const response = await sandbox_openapi.handleDeployWebV2({
       client: this.client,
       body: {

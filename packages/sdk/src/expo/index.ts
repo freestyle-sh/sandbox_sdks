@@ -21,5 +21,6 @@ export const freestyleExpoServer = ({
     return response;
   });
 
+  // @ts-expect-error — Deno.serve is not in the types
   Deno.serve(app.fetch);
 };

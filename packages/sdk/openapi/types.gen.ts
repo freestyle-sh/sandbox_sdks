@@ -19,6 +19,10 @@ export type AccessTokenInfo = {
 
 export type Behavior = 'regex' | 'exact';
 
+export type BuildOptions = {
+    command?: (string) | null;
+};
+
 export type CreateDomainMappingRequest = {
     deploymentId: string;
 };
@@ -182,6 +186,7 @@ export type FreestyleDeployWebConfiguration = {
     } | null;
     serverStartCheck?: boolean;
     networkPermissions?: Array<FreestyleNetworkPermission> | null;
+    build?: (null | BuildOptions);
 };
 
 export type FreestyleDeployWebErrorResponse = {
@@ -210,17 +215,12 @@ export type FreestyleDeployWebPayloadV2 = {
     config?: FreestyleDeployWebConfiguration;
 };
 
-export type FreestyleDeployWebSuccessResponse = {
+export type FreestyleDeployWebSuccessResponseV2 = {
     deploymentId: string;
-    domains?: Array<(string)> | null;
     /**
      * @deprecated
      */
-    projectId?: (string) | null;
-};
-
-export type FreestyleDeployWebSuccessResponseV2 = {
-    deploymentId: string;
+    projectId: string;
     domains?: Array<(string)> | null;
 };
 
@@ -883,7 +883,7 @@ export type HandleDeployWebData = {
     body: FreestyleDeployWebPayload;
 };
 
-export type HandleDeployWebResponse = (FreestyleDeployWebSuccessResponse);
+export type HandleDeployWebResponse = (FreestyleDeployWebSuccessResponseV2);
 
 export type HandleDeployWebError = (FreestyleDeployWebErrorResponse);
 
