@@ -6,7 +6,6 @@ import {
 import { FreestyleSandboxes } from "..";
 import { tool } from "ai";
 import { z } from "zod";
-import { P } from "../../dist/types.gen-BuhQ5LpB";
 
 export const executeCodeSchema = z.object({
   script: z.string().describe(`
@@ -52,9 +51,11 @@ export const executeTool = (
   config: FreestyleExecuteScriptParamsConfiguration & {
     apiKey: string;
     onResult?: (_v: {
+      toolCallId: string;
       input: {
         script: string;
-      } & Record<string, unknown>;
+        [key: string]: unknown;
+      };
       result: FreestyleExecuteScriptResultSuccess | HandleExecuteScriptError;
     }) => void | Promise<void>;
     truncateOutput?: boolean;
@@ -69,11 +70,12 @@ export const executeTool = (
   return tool({
     description: executeCodeDescription(envVars, nodeModules),
     parameters: executeCodeSchema,
-    execute: async ({ script, ...otherParams }) => {
+    execute: async ({ script, ...otherParams }, { toolCallId }) => {
       try {
         const res = await api.executeScript(script, config);
         if (config.onResult) {
           await config.onResult({
+            toolCallId,
             result: res,
             input: {
               script,
