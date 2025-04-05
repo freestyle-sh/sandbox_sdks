@@ -8,7 +8,7 @@ import { serveStatic } from "hono/deno";
 export const freestyleExpoServer = ({
   CLIENT_BUILD_DIR = path.join(process.cwd(), "dist/client"),
   SERVER_BUILD_DIR = path.join(process.cwd(), "dist/server"),
-}) => {
+} = {}) => {
   // // Expo handler
   const expoHandler = createRequestHandler(SERVER_BUILD_DIR);
 
