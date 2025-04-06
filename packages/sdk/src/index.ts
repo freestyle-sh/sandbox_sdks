@@ -29,10 +29,12 @@ import type {
   HandleVerifyDomainResponse,
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
+  BuildOptions,
 } from "../openapi/index.ts";
 
 export type {
   AccessLevel,
+  BuildOptions,
   CreatedToken,
   CreateRepositoryResponseSuccess,
   DescribePermissionResponseSuccess,
@@ -134,13 +136,23 @@ export class FreestyleSandboxes {
    */
   async deployWeb(
     source: sandbox_openapi.DeploymentSource,
-    config?: FreestyleDeployWebConfiguration
+    config?: Omit<FreestyleDeployWebConfiguration, "build"> & {
+      build?:
+        | BuildOptions
+        | (Omit<BuildOptions, "command"> & {
+            command: string | string[];
+          });
+    }
   ): Promise<FreestyleDeployWebSuccessResponseV2> {
+    if (Array.isArray(config.build.command)) {
+      config.build.command = config.build.command.join(" && ") as string;
+    }
+
     const response = await sandbox_openapi.handleDeployWebV2({
       client: this.client,
       body: {
         source: source,
-        config: config,
+        config: config as FreestyleDeployWebConfiguration,
       },
     });
     if (response.data) {

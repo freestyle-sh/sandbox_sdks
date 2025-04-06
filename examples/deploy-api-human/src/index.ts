@@ -12,6 +12,9 @@ api
   .deployWeb(prepareDirForDeploymentSync("test-sites/simple"), {
     domains: ["testsitesimple.style.dev"],
     entrypoint: "index.ts",
+    build: {
+      command: ["npm run build"],
+    },
     // projectId: "5b949388-78ef-4cdd-830c-e9681dfa2aec.style.dev",
   })
   .then((result) => {
