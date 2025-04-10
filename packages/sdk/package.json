@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.42",
+  "version": "0.0.44",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -80,7 +80,7 @@
     "@langchain/core": "^0.3.38",
     "@langchain/langgraph": "^0.2.44",
     "@mastra/core": "^0.6.0",
-    "ai": "^4.0.25",
+    "ai": "^4.3.4",
     "humanlayer": "^0.7.0",
     "pkgroll": "^2.6.0"
   },
