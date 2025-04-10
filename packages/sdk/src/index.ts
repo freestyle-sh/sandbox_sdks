@@ -144,7 +144,7 @@ export class FreestyleSandboxes {
           });
     }
   ): Promise<FreestyleDeployWebSuccessResponseV2> {
-    if (Array.isArray(config.build.command)) {
+    if (Array.isArray(config.build?.command)) {
       config.build.command = config.build.command.join(" && ") as string;
     }
 
