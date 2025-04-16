@@ -32,6 +32,11 @@ export type CreatedToken = {
     token: string;
 };
 
+export type CreateRecordParams = {
+    domain: string;
+    record: DnsRecordData;
+};
+
 export type CreateRepositoryRequest = {
     /**
      * This name is not visible to users, and is only accessible to you via API and in the
@@ -78,6 +83,11 @@ export type DescribePermissionResponseSuccess = {
     accessLevel?: (null | AccessLevel);
 };
 
+export type DevServer = {
+    domain?: (string) | null;
+    command?: (string) | null;
+};
+
 export type DnsRecord = {
     kind: DnsRecordKind;
     name: string;
@@ -85,6 +95,14 @@ export type DnsRecord = {
     ttl: string;
     priority?: (number) | null;
     managed: boolean;
+};
+
+export type DnsRecordData = {
+    kind: DnsRecordKind;
+    name: string;
+    value: string;
+    ttl?: (string) | null;
+    priority?: (number) | null;
 };
 
 export type DnsRecordKind = 'A' | 'AAAA' | 'CNAME' | 'TXT' | 'NS';
@@ -187,6 +205,10 @@ export type FreestyleDeployWebConfiguration = {
     serverStartCheck?: boolean;
     networkPermissions?: Array<FreestyleNetworkPermission> | null;
     build?: (null | BuildOptions);
+    /**
+     * Timeout for the deployment in seconds. If not provided, the default is 10 seconds.
+     */
+    timeout?: (number) | null;
 };
 
 export type FreestyleDeployWebErrorResponse = {
@@ -372,6 +394,8 @@ export type GrantPermissionRequest = {
     permission: AccessLevel;
 };
 
+export type InternalServerError = string;
+
 export type ListGitTokensResponseSuccess = {
     tokens: Array<AccessTokenInfo>;
 };
@@ -437,10 +461,7 @@ export type HandleListRecordsError = ({
 });
 
 export type HandleCreateRecordData = {
-    query: {
-        domain: string;
-        record: DnsRecord;
-    };
+    body: CreateRecordParams;
 };
 
 export type HandleCreateRecordResponse = ({
@@ -558,6 +579,17 @@ export type HandleDeleteDomainVerificationResponse = ({
 export type HandleDeleteDomainVerificationError = ({
     message: string;
 });
+
+export type HandleEphemeralDevServerData = {
+    body: DevServer;
+};
+
+export type HandleEphemeralDevServerResponse = ({
+    url: string;
+    isNew: boolean;
+});
+
+export type HandleEphemeralDevServerError = (InternalServerError);
 
 export type HandleListExecuteRunsData = {
     query?: {

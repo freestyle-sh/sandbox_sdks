@@ -1,4 +1,5 @@
 import {
+  FreestyleDeployWebConfiguration,
   FreestyleExecuteScriptParamsConfiguration,
   FreestyleExecuteScriptResultSuccess,
   HandleExecuteScriptError,
@@ -107,7 +108,7 @@ export const executeTool = (
  * @param config.apiKey - The API key to use
  */
 export const deployWebTool = (
-  config: FreestyleExecuteScriptParamsConfiguration & {
+  config: FreestyleDeployWebConfiguration & {
     apiKey: string;
   }
 ) => {
