@@ -442,14 +442,14 @@ export class FreestyleSandboxes {
    * Delete a git repository.
    */
   async deleteGitRepository({
-    repositoryId,
+    repoId,
   }: {
-    repositoryId: string;
+    repoId: string;
   }): Promise<HandleDeleteRepoResponse> {
     const response = await sandbox_openapi.handleDeleteRepo({
       client: this.client,
       path: {
-        repo: repositoryId,
+        repo: repoId,
       },
     });
 
@@ -458,7 +458,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete git repository ${repositoryId}: ${response.error}`,
+      `Failed to delete git repository ${repoId}: ${response.error}`,
     );
   }
 
@@ -715,6 +715,89 @@ export class FreestyleSandboxes {
 
     throw new Error(
       `Failed to list git access tokens: ${response.error.message}`,
+    );
+  }
+
+  /**
+   * List git triggers for a repository.
+   */
+  async listGitTriggers({
+    repoId,
+  }: {
+    repoId: string;
+  }): Promise<sandbox_openapi.HandleListGitTriggersResponse> {
+    const response = await sandbox_openapi.handleListGitTriggers({
+      client: this.client,
+      path: {
+        repo: repoId,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to list git triggers for repository ${repoId}: ${response.error.message}`,
+    );
+  }
+
+  /**
+   * Create a git trigger for a repository.
+   */
+  async createGitTrigger({
+    repoId,
+    trigger,
+    action,
+  }: {
+    repoId: string;
+    trigger: sandbox_openapi.GitTrigger;
+    action: sandbox_openapi.GitTriggerAction;
+  }): Promise<sandbox_openapi.HandleCreateGitTriggerResponse> {
+    const response = await sandbox_openapi.handleCreateGitTrigger({
+      client: this.client,
+      path: {
+        repo: repoId,
+      },
+      body: {
+        trigger,
+        action,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to create git trigger for repository ${repoId}: ${response.error.message}`,
+    );
+  }
+
+  /**
+   * Delete a git trigger.
+   */
+  async deleteGitTrigger({
+    repoId,
+    triggerId,
+  }: {
+    repoId: string;
+    triggerId: string;
+  }): Promise<void> {
+    const response = await sandbox_openapi.handleDeleteGitTrigger({
+      client: this.client,
+      path: {
+        repo: repoId,
+        trigger: triggerId,
+      },
+    });
+
+    if (response.data) {
+      return;
+    }
+
+    throw new Error(
+      `Failed to delete git trigger ${triggerId} for repository ${repoId}: ${response.error.message}`,
     );
   }
 }
