@@ -388,11 +388,9 @@ export class FreestyleSandboxes {
 
   /**
    * Create a new git repository.
-   *
-   * @param name The name of the repository.
    */
   async createGitRepository(
-    name: string
+    { name }: { name: string }
   ): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,
@@ -412,19 +410,15 @@ export class FreestyleSandboxes {
 
   /**
    * List git repositories.
-   *
-   * @param limit The maximum number of repositories to return. Defaults to 10.
-   * @param offset The offset to start at. Defaults to 0.
    */
   async listGitRepositories(
-    limit?: number,
-    offset?: number
+    { limit = 10, offset = 0 }: { limit?: number; offset?: number } = {}
   ): Promise<HandleListRepositoriesResponse> {
     const response = await sandbox_openapi.handleListRepositories({
       client: this.client,
       query: {
-        limit: limit ?? 10,
-        offset: offset ?? 0,
+        limit,
+        offset,
       },
     });
 
@@ -437,11 +431,9 @@ export class FreestyleSandboxes {
 
   /**
    * Delete a git repository.
-   *
-   * @param repositoryId The ID of the repository to delete.
    */
   async deleteGitRepository(
-    repositoryId: string
+    { repositoryId }: { repositoryId: string }
   ): Promise<HandleDeleteRepoResponse> {
     const response = await sandbox_openapi.handleDeleteRepo({
       client: this.client,
@@ -476,11 +468,9 @@ export class FreestyleSandboxes {
 
   /**
    * Delete a git identity.
-   *
-   * @param identityId The ID of the identity to delete.
    */
   async deleteGitIdentity(
-    identityId: string
+    { identityId }: { identityId: string }
   ): Promise<HandleDeleteIdentityResponse> {
     const response = await sandbox_openapi.handleDeleteIdentity({
       client: this.client,
@@ -498,15 +488,9 @@ export class FreestyleSandboxes {
 
   /**
    * Grant a git identity access to a repository.
-   *
-   * @param repoId The ID of the repository to grant access to.
-   * @param identityId The ID of the identity grant access to `repoId`.
-   * @param permission The permission to grant.
    */
   async grantGitPermission(
-    repoId: string,
-    identityId: string,
-    permission: AccessLevel
+    { repoId, identityId, permission }: { repoId: string; identityId: string; permission: AccessLevel }
   ) {
     const response = await sandbox_openapi.handleGrantPermission({
       client: this.client,
@@ -530,15 +514,9 @@ export class FreestyleSandboxes {
 
   /**
    * Update a git identity's permissions on a repository.
-   *
-   * @param repoId The ID of the repository to update permissions for.
-   * @param identityId The ID of the identity to whose access to update.
-   * @param permission The permission to grant.
    */
   async updateGitPermission(
-    repoId: string,
-    identityId: string,
-    permission: AccessLevel
+    { repoId, identityId, permission }: { repoId: string; identityId: string; permission: AccessLevel }
   ): Promise<void> {
     const response = await sandbox_openapi.handleUpdatePermission({
       client: this.client,
@@ -562,11 +540,10 @@ export class FreestyleSandboxes {
 
   /**
    * Revoke a git identity's access to a repository.
-   *
-   * @param repoId The ID of the repository revoke access to.
-   * @param identityId The ID of the identity to revoke access from.
    */
-  async revokeGitPermission(repoId: string, identityId: string): Promise<void> {
+  async revokeGitPermission(
+    { repoId, identityId }: { repoId: string; identityId: string }
+  ): Promise<void> {
     const response = await sandbox_openapi.handleRevokePermission({
       client: this.client,
       path: {
@@ -586,11 +563,9 @@ export class FreestyleSandboxes {
 
   /**
    * List access permissions for a git identity.
-   *
-   * @param identityId The ID of the identity to list permissions for.
    */
   async listGitPermissions(
-    identityId: string
+    { identityId }: { identityId: string }
   ): Promise<ListPermissionResponseSuccess> {
     const response = await sandbox_openapi.handleListPermissions({
       client: this.client,
@@ -610,13 +585,9 @@ export class FreestyleSandboxes {
 
   /**
    * Get the permission of a git identity on a repository.
-   *
-   * @param repoId The ID of the repository to check permissions for.
-   * @param identityId The ID of the identity to check permissions for.
    */
   async getGitPermission(
-    repoId: string,
-    identityId: string
+    { repoId, identityId }: { repoId: string; identityId: string }
   ): Promise<DescribePermissionResponseSuccess> {
     const response = await sandbox_openapi.handleDescribePermission({
       client: this.client,
@@ -637,10 +608,10 @@ export class FreestyleSandboxes {
 
   /**
    * Create a new git access token for an identity.
-   *
-   * @param identityId The ID of the identity to create the token for.
    */
-  async createGitAccessToken(identityId: string): Promise<CreatedToken> {
+  async createGitAccessToken(
+    { identityId }: { identityId: string }
+  ): Promise<CreatedToken> {
     const response = await sandbox_openapi.handleCreateGitToken({
       client: this.client,
       path: {
@@ -659,13 +630,9 @@ export class FreestyleSandboxes {
 
   /**
    * Revoke a git access token.
-   *
-   * @param identityId The ID of the identity the token belongs to.
-   * @param tokenId The ID of the token to revoke.
    */
   async revokeGitAccessToken(
-    identityId: string,
-    tokenId: string
+    { identityId, tokenId }: { identityId: string; tokenId: string }
   ): Promise<void> {
     const response = await sandbox_openapi.handleRevokeGitToken({
       client: this.client,
@@ -688,11 +655,9 @@ export class FreestyleSandboxes {
 
   /**
    * List git access tokens for an identity.
-   *
-   * @param identityId The ID of the identity to list tokens for.
    */
   async listGitAccessTokens(
-    identityId: string
+    { identityId }: { identityId: string }
   ): Promise<ListGitTokensResponseSuccess> {
     const response = await sandbox_openapi.handleListGitTokens({
       client: this.client,
