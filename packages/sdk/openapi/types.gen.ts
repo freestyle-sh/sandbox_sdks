@@ -37,13 +37,18 @@ export type CreateRecordParams = {
     record: DnsRecordData;
 };
 
-export type CreateRepositoryRequest = (null | CreateRepoSource) & {
+export type CreateRepoRequest = {
+    source?: (null | CreateRepoSource);
+};
+
+export type CreateRepositoryRequest = {
     /**
      * This name is not visible to users, and is only accessible to you via API and in the
      * dashboard. Mostly useful for observability.
      */
     name?: (string) | null;
     public?: boolean;
+    source?: CreateRepoSource;
 };
 
 export type CreateRepositoryResponseSuccess = {
@@ -51,12 +56,13 @@ export type CreateRepositoryResponseSuccess = {
 };
 
 export type CreateRepoSource = {
-    cloneFrom: {
-        url: string;
-        branch?: (string) | null;
-        depth?: (number) | null;
-    };
+    url: string;
+    branch?: (string) | null;
+    depth?: (number) | null;
+    type: 'git';
 };
+
+export type type = 'git';
 
 export type DeploymentLogEntry = {
     deploymentId: string;
@@ -812,7 +818,15 @@ export type HandleListRepositoriesError = ({
 });
 
 export type HandleCreateRepoData = {
-    body: CreateRepositoryRequest;
+    body: {
+        /**
+         * This name is not visible to users, and is only accessible to you via API and in the
+         * dashboard. Mostly useful for observability.
+         */
+        name?: (string) | null;
+        public?: boolean;
+        source?: CreateRepoSource;
+    };
 };
 
 export type HandleCreateRepoResponse = (CreateRepositoryResponseSuccess);
