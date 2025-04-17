@@ -392,11 +392,12 @@ export class FreestyleSandboxes {
   async createGitRepository({
     name,
     public: pub = false,
-    cloneFrom,
+    source,
   }: {
     name: string;
     public?: boolean;
-    cloneFrom?: {
+    source?: {
+      type: "git";
       url: string;
       branch?: string;
       depth?: number;
@@ -407,7 +408,7 @@ export class FreestyleSandboxes {
       body: {
         name,
         public: pub,
-        cloneFrom,
+        source,
       },
     });
 
