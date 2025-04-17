@@ -392,15 +392,22 @@ export class FreestyleSandboxes {
   async createGitRepository({
     name,
     public: pub = false,
+    cloneFrom,
   }: {
     name: string;
     public?: boolean;
+    cloneFrom?: {
+      url: string;
+      branch?: string;
+      depth?: number;
+    };
   }): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,
       body: {
         name,
         public: pub,
+        cloneFrom,
       },
     });
 

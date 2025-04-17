@@ -37,7 +37,7 @@ export type CreateRecordParams = {
     record: DnsRecordData;
 };
 
-export type CreateRepositoryRequest = {
+export type CreateRepositoryRequest = (null | CreateRepoSource) & {
     /**
      * This name is not visible to users, and is only accessible to you via API and in the
      * dashboard. Mostly useful for observability.
@@ -48,6 +48,14 @@ export type CreateRepositoryRequest = {
 
 export type CreateRepositoryResponseSuccess = {
     repoId: string;
+};
+
+export type CreateRepoSource = {
+    cloneFrom: {
+        url: string;
+        branch?: (string) | null;
+        depth?: (number) | null;
+    };
 };
 
 export type DeploymentLogEntry = {
@@ -879,10 +887,6 @@ export type HandleCreateGitTriggerError = ({
 
 export type HandleDeleteGitTriggerData = {
     path: {
-        /**
-         * The repository id
-         */
-        repo: string;
         /**
          * The trigger id
          */
