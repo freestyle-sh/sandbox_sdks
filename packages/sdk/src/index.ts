@@ -777,17 +777,10 @@ export class FreestyleSandboxes {
   /**
    * Delete a git trigger.
    */
-  async deleteGitTrigger({
-    repoId,
-    triggerId,
-  }: {
-    repoId: string;
-    triggerId: string;
-  }): Promise<void> {
+  async deleteGitTrigger({ triggerId }: { triggerId: string }): Promise<void> {
     const response = await sandbox_openapi.handleDeleteGitTrigger({
       client: this.client,
       path: {
-        repo: repoId,
         trigger: triggerId,
       },
     });
@@ -797,7 +790,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete git trigger ${triggerId} for repository ${repoId}: ${response.error.message}`,
+      `Failed to delete git trigger ${triggerId}: ${response.error.message}`,
     );
   }
 }
