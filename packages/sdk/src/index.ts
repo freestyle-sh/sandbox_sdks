@@ -138,10 +138,10 @@ export class FreestyleSandboxes {
     source: sandbox_openapi.DeploymentSource,
     config?: Omit<FreestyleDeployWebConfiguration, "build"> & {
       build?:
-        | BuildOptions
-        | (Omit<BuildOptions, "command"> & {
-            command: string | string[];
-          });
+      | BuildOptions
+      | (Omit<BuildOptions, "command"> & {
+        command: string | string[];
+      });
     },
   ): Promise<FreestyleDeployWebSuccessResponseV2> {
     if (Array.isArray(config.build?.command)) {
@@ -800,6 +800,31 @@ export class FreestyleSandboxes {
     throw new Error(
       `Failed to delete git trigger ${triggerId}: ${response.error.message}`,
     );
+  }
+
+  /**
+   * Request a dev server for a repository. If a dev server is already running
+   * for that repository, it will return a url to that server. Dev servers are
+   * ephemeral so you should call this function every time you need a url. Do
+   * not store the url in your database!
+   */
+  async requestDevServer({
+    repoUrl
+  }: { repoUrl: string }) {
+    const response = await sandbox_openapi.handleEphemeralDevServer({
+      client: this.client,
+      body: {
+        repo: repoUrl
+      }
+    });
+
+    if (!response.data) {
+      throw new Error(
+        `Failed to request dev server: ${response.error}`,
+      )
+    }
+
+    return response.data;
   }
 }
 

@@ -98,8 +98,9 @@ export type DescribePermissionResponseSuccess = {
 };
 
 export type DevServer = {
-    domain?: (string) | null;
     command?: (string) | null;
+    repo?: (string) | null;
+    domain?: (string) | null;
 };
 
 export type DnsRecord = {
@@ -601,6 +602,8 @@ export type HandleEphemeralDevServerData = {
 export type HandleEphemeralDevServerResponse = ({
     url: string;
     isNew: boolean;
+    devCommandRunning: boolean;
+    installCommandRunning: boolean;
 });
 
 export type HandleEphemeralDevServerError = (InternalServerError);
