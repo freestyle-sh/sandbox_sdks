@@ -811,12 +811,40 @@ export class FreestyleSandboxes {
   async requestDevServer({
     repoUrl
   }: { repoUrl: string }) {
+
+    function formatHook(serverUrl: string, repoUrl: string) {
+      const hook =
+        serverUrl +
+        "/__freestyle_dev_server/update/git?repo=" +
+        encodeURIComponent(repoUrl);
+
+      console.log(hook);
+      return hook;
+    }
+
+
     const response = await sandbox_openapi.handleEphemeralDevServer({
       client: this.client,
       body: {
         repo: repoUrl
       }
     });
+
+
+    if (response.data.isNew) {
+      const repoId = repoUrl.split("/").at(-1)!;
+
+      await this.createGitTrigger({
+        repoId: repoId,
+        action: {
+          endpoint: formatHook(response.data?.url!, repoUrl),
+          action: "webhook"
+        },
+        trigger: {
+          event: "push",
+        }
+      }).then(console.log);
+    }
 
     if (!response.data) {
       throw new Error(
