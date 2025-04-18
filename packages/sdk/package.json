@@ -65,6 +65,16 @@
         "types": "./dist/utils/index.d.mts",
         "default": "./dist/utils/index.mjs"
       }
+    },
+    "./react/dev-server": {
+      "require": {
+        "types": "./dist/react/dev-server/index.d.cts",
+        "default": "./dist/react/dev-server/index.cjs"
+      },
+      "import": {
+        "types": "./dist/react/dev-server/index.d.mts",
+        "default": "./dist/react/dev-server/index.mjs"
+      }
     }
   },
   "scripts": {
@@ -86,11 +96,13 @@
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.5.7",
+    "@tanstack/react-query": "^5.74.4",
     "expo-router": "^4.0.20",
     "glob": "^11.0.1",
     "hono": "^4.7.5",
     "openai": "^4.77.3",
     "openapi": "^1.0.1",
+    "react": "*",
     "zod": "^3.24.1"
   },
   "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
