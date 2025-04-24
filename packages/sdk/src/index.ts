@@ -797,60 +797,58 @@ export class FreestyleSandboxes {
    * ephemeral so you should call this function every time you need a url. Do
    * not store the url in your database!
    */
-  async requestDevServer(repo: { repoId: string } | { repoUrl: string }) {
+  async requestDevServer({
+    repo,
+    repoUrl,
+    repoId,
+  }: {
+    repoUrl?: string;
+    repoId?: string;
+    repo?: string;
+  }) {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
         serverUrl +
         "/__freestyle_dev_server/update/git?repo=" +
         encodeURIComponent(repoUrl);
-
-      console.log(hook);
       return hook;
     }
-
-    let repoId: string;
-    if ("repoId" in repo) {
-      repoId = repo.repoId;
-    } else if ("repoUrl" in repo) {
-      const parts = repo.repoUrl.split("/");
-      repoId = parts[parts.length - 1]; // Get the last part of the URL path
-    } else {
-      throw new Error("Either repoId or repoUrl must be provided");
-    }
-
-    const repoUrl =
-      (process.env.GIT_URL ?? "https://git.freestyle.sh/") + repoId;
 
     const response = await sandbox_openapi.handleEphemeralDevServer({
       client: this.client,
       body: {
+        // @ts-ignore
+        repo: repo || repoUrl,
         repoId: repoId,
       },
     });
 
     if (response.data.isNew) {
+      const rId = repoId || repoUrl.split("/").at(-1)!;
+
       await this.createGitTrigger({
-        repoId: repoId,
+        repoId: rId,
         action: {
-          endpoint: formatHook(response.data?.url!, repoUrl),
+          endpoint: formatHook(
+            response.data?.url!,
+            repoUrl || repo || `https://git.freestyle.sh/${rId}`
+          ),
           action: "webhook",
         },
         trigger: {
           event: "push",
         },
-      }).then(console.log);
+      });
     }
 
     if (!response.data) {
       throw new Error(`Failed to request dev server: ${response.error}`);
     }
-
     return {
       ...response.data,
       // @ts-ignore
       mcpEphemeralUrl:
-        (response.data as unknown as Record<string, unknown>).mcpEphemeralUrl ||
-        response.data.url + "/mcp",
+        (response.data as any).mcpEphemeralUrl || response.data.url + "/mcp",
       // @ts-ignore
       ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
     };
