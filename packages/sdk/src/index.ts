@@ -29,12 +29,10 @@ import type {
   HandleVerifyDomainResponse,
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
-  BuildOptions,
 } from "../openapi/index.ts";
 
 export type {
   AccessLevel,
-  BuildOptions,
   CreatedToken,
   CreateRepositoryResponseSuccess,
   DescribePermissionResponseSuccess,
@@ -61,6 +59,7 @@ export type {
   HandleVerifyDomainResponse,
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
+  DeploymentBuildOptions,
 } from "../openapi/index.ts";
 
 export class FreestyleSandboxes {
@@ -107,7 +106,7 @@ export class FreestyleSandboxes {
    */
   async executeScript(
     script: string,
-    config?: FreestyleExecuteScriptParamsConfiguration,
+    config?: FreestyleExecuteScriptParamsConfiguration
   ): Promise<FreestyleExecuteScriptResultSuccess> {
     const response = await sandbox_openapi.handleExecuteScript({
       client: this.client,
@@ -122,7 +121,7 @@ export class FreestyleSandboxes {
     }
     throw {
       message: `Failed to execute script: \n\n${script}\n\nError:\n\n${JSON.stringify(
-        response,
+        response
       )}`,
       error: response.error,
     };
@@ -136,18 +135,8 @@ export class FreestyleSandboxes {
    */
   async deployWeb(
     source: sandbox_openapi.DeploymentSource,
-    config?: Omit<FreestyleDeployWebConfiguration, "build"> & {
-      build?:
-      | BuildOptions
-      | (Omit<BuildOptions, "command"> & {
-        command: string | string[];
-      });
-    },
+    config?: FreestyleDeployWebConfiguration
   ): Promise<FreestyleDeployWebSuccessResponseV2> {
-    if (Array.isArray(config.build?.command)) {
-      config.build.command = config.build.command.join(" && ") as string;
-    }
-
     const response = await sandbox_openapi.handleDeployWebV2({
       client: this.client,
       body: {
@@ -159,7 +148,7 @@ export class FreestyleSandboxes {
       return response.data;
     }
     throw new Error(
-      `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`,
+      `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`
     );
   }
 
@@ -167,7 +156,7 @@ export class FreestyleSandboxes {
    * Deploy a Cloudstate project to a sandbox.
    */
   async deployCloudstate(
-    body: FreestyleCloudstateDeployRequest,
+    body: FreestyleCloudstateDeployRequest
   ): Promise<FreestyleCloudstateDeploySuccessResponse> {
     const response = await sandbox_openapi.handleDeployCloudstate({
       client: this.client,
@@ -230,7 +219,7 @@ export class FreestyleSandboxes {
    * @returns The domain verification token.
    */
   async createDomainVerificationRequest(
-    domain: string,
+    domain: string
   ): Promise<HandleCreateDomainVerificationResponse> {
     const response = await sandbox_openapi.handleCreateDomainVerification({
       client: this.client,
@@ -251,7 +240,7 @@ export class FreestyleSandboxes {
    * @returns The domain verification request.
    */
   async verifyDomain(
-    domain: string,
+    domain: string
   ): Promise<HandleVerifyDomainResponse | HandleVerifyDomainError> {
     const response = await sandbox_openapi.handleVerifyDomain({
       client: this.client,
@@ -263,7 +252,7 @@ export class FreestyleSandboxes {
       return response.data;
     }
     throw new Error(
-      `Failed to verify domain ${domain}: ${response.error.message}`,
+      `Failed to verify domain ${domain}: ${response.error.message}`
     );
   }
 
@@ -282,20 +271,20 @@ export class FreestyleSandboxes {
     const response = await sandbox_openapi.handleListDomainVerificationRequests(
       {
         client: this.client,
-      },
+      }
     );
     if (response.data) {
       return response.data;
     }
 
     throw new Error(
-      `Failed to list domain verification requests\n${response.error.message}`,
+      `Failed to list domain verification requests\n${response.error.message}`
     );
   }
 
   async deleteDomainVerificationRequest(
     domain: string,
-    verificationCode: string,
+    verificationCode: string
   ): Promise<HandleDeleteDomainVerificationResponse> {
     const response = await sandbox_openapi.handleDeleteDomainVerification({
       client: this.client,
@@ -309,13 +298,13 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`,
+      `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`
     );
   }
 
   async listWebDeployments(
     limit?: number,
-    offset?: number,
+    offset?: number
   ): Promise<HandleListWebDeploysResponse> {
     const response = await sandbox_openapi.handleListWebDeploys({
       client: this.client,
@@ -330,13 +319,13 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list web deployments\n${response.error.message}`,
+      `Failed to list web deployments\n${response.error.message}`
     );
   }
 
   async listExecuteRuns(
     limit?: number,
-    offset?: number,
+    offset?: number
   ): Promise<HandleListExecuteRunsResponse> {
     const response = await sandbox_openapi.handleListExecuteRuns({
       client: this.client,
@@ -364,7 +353,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to get execute run with ID ${id}: ${response.error.message}`,
+      `Failed to get execute run with ID ${id}: ${response.error.message}`
     );
   }
 
@@ -382,7 +371,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to provision wildcard for domain ${domain}: ${response.error.message}`,
+      `Failed to provision wildcard for domain ${domain}: ${response.error.message}`
     );
   }
 
@@ -417,7 +406,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to create git repository ${name}: ${response.error}`,
+      `Failed to create git repository ${name}: ${response.error}`
     );
   }
 
@@ -466,7 +455,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete git repository ${repoId}: ${response.error}`,
+      `Failed to delete git repository ${repoId}: ${response.error}`
     );
   }
 
@@ -535,7 +524,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to grant access to git identity ${identityId} for repository ${repoId}: ${response.error}`,
+      `Failed to grant access to git identity ${identityId} for repository ${repoId}: ${response.error}`
     );
   }
 
@@ -567,7 +556,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to update permission for git identity ${identityId} for repository ${repoId}: ${response.error}`,
+      `Failed to update permission for git identity ${identityId} for repository ${repoId}: ${response.error}`
     );
   }
 
@@ -594,7 +583,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to revoke access to git identity ${identityId} for repository ${repoId}: ${response.error}`,
+      `Failed to revoke access to git identity ${identityId} for repository ${repoId}: ${response.error}`
     );
   }
 
@@ -618,7 +607,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list permissions for git identity ${identityId}: ${response.error}`,
+      `Failed to list permissions for git identity ${identityId}: ${response.error}`
     );
   }
 
@@ -645,7 +634,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to get permission for git identity ${identityId} on repository ${repoId}: ${response.error}`,
+      `Failed to get permission for git identity ${identityId} on repository ${repoId}: ${response.error}`
     );
   }
 
@@ -669,7 +658,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to create git access token: ${response.error.message}`,
+      `Failed to create git access token: ${response.error.message}`
     );
   }
 
@@ -698,7 +687,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to revoke git access token ${tokenId}: ${response.error.message}`,
+      `Failed to revoke git access token ${tokenId}: ${response.error.message}`
     );
   }
 
@@ -722,7 +711,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list git access tokens: ${response.error.message}`,
+      `Failed to list git access tokens: ${response.error.message}`
     );
   }
 
@@ -746,7 +735,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list git triggers for repository ${repoId}: ${response.error.message}`,
+      `Failed to list git triggers for repository ${repoId}: ${response.error.message}`
     );
   }
 
@@ -778,7 +767,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to create git trigger for repository ${repoId}: ${response.error.message}`,
+      `Failed to create git trigger for repository ${repoId}: ${response.error.message}`
     );
   }
 
@@ -798,7 +787,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete git trigger ${triggerId}: ${response.error.message}`,
+      `Failed to delete git trigger ${triggerId}: ${response.error.message}`
     );
   }
 
@@ -809,9 +798,10 @@ export class FreestyleSandboxes {
    * not store the url in your database!
    */
   async requestDevServer({
+    repo,
     repoUrl,
     repoId,
-  }: { repoUrl?: string, repoId?: string }) {
+  }: { repoUrl?: string, repoId?: string, repo?: string }) {
 
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
@@ -825,7 +815,9 @@ export class FreestyleSandboxes {
     const response = await sandbox_openapi.handleEphemeralDevServer({
       client: this.client,
       body: {
-        repo: repoUrl
+        // @ts-ignore
+        repo: repo || repoUrl,
+        repoId: repoId,
       }
     });
 
@@ -836,7 +828,7 @@ export class FreestyleSandboxes {
       await this.createGitTrigger({
         repoId: rId,
         action: {
-          endpoint: formatHook(response.data?.url!, repoUrl || `https://git.freestyle.sh/${rId}`),
+          endpoint: formatHook(response.data?.url!, repoUrl || repo || `https://git.freestyle.sh/${rId}`),
           action: "webhook"
         },
         trigger: {
