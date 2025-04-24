@@ -809,16 +809,15 @@ export class FreestyleSandboxes {
    * not store the url in your database!
    */
   async requestDevServer({
-    repoUrl
-  }: { repoUrl: string }) {
+    repoUrl,
+    repoId,
+  }: { repoUrl?: string, repoId?: string }) {
 
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
         serverUrl +
         "/__freestyle_dev_server/update/git?repo=" +
         encodeURIComponent(repoUrl);
-
-      console.log(hook);
       return hook;
     }
 
@@ -832,18 +831,18 @@ export class FreestyleSandboxes {
 
 
     if (response.data.isNew) {
-      const repoId = repoUrl.split("/").at(-1)!;
+      const rId = repoId || repoUrl.split("/").at(-1)!;
 
       await this.createGitTrigger({
-        repoId: repoId,
+        repoId: rId,
         action: {
-          endpoint: formatHook(response.data?.url!, repoUrl),
+          endpoint: formatHook(response.data?.url!, repoUrl || `https://git.freestyle.sh/${rId}`),
           action: "webhook"
         },
         trigger: {
           event: "push",
         }
-      }).then(console.log);
+      });
     }
 
     if (!response.data) {
@@ -851,8 +850,13 @@ export class FreestyleSandboxes {
         `Failed to request dev server: ${response.error}`,
       )
     }
-
-    return response.data;
+    return {
+      ...response.data,
+      // @ts-ignore
+      mcpEphemeralUrl: response.data.mcpEphemeralUrl || response.data.url + "/mcp",
+      // @ts-ignore
+      ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
+    };
   }
 }
 
