@@ -19,10 +19,6 @@ export type AccessTokenInfo = {
 
 export type Behavior = 'regex' | 'exact';
 
-export type BuildOptions = {
-    command?: (string) | null;
-};
-
 export type CreateDomainMappingRequest = {
     deploymentId: string;
 };
@@ -64,6 +60,12 @@ export type CreateRepoSource = {
 
 export type type = 'git';
 
+export type CustomBuildOptions = {
+    command?: (string) | null;
+};
+
+export type DeploymentBuildOptions = CustomBuildOptions | boolean;
+
 export type DeploymentLogEntry = {
     deploymentId: string;
     accountId: string;
@@ -85,6 +87,10 @@ export type DeploymentSource = {
 } | {
     url: string;
     kind: 'tar';
+} | {
+    url: string;
+    branch?: (string) | null;
+    kind: 'git';
 };
 
 export type kind = 'files';
@@ -99,7 +105,7 @@ export type DescribePermissionResponseSuccess = {
 
 export type DevServer = {
     command?: (string) | null;
-    repo?: (string) | null;
+    repoId?: (string) | null;
     domain?: (string) | null;
 };
 
@@ -219,7 +225,7 @@ export type FreestyleDeployWebConfiguration = {
     } | null;
     serverStartCheck?: boolean;
     networkPermissions?: Array<FreestyleNetworkPermission> | null;
-    build?: (null | BuildOptions);
+    build?: (null | DeploymentBuildOptions);
     /**
      * Timeout for the deployment in seconds. If not provided, the default is 10 seconds.
      */
@@ -259,6 +265,10 @@ export type FreestyleDeployWebSuccessResponseV2 = {
      */
     projectId: string;
     domains?: Array<(string)> | null;
+    /**
+     * The entrypoint file for the website. If not specified we try to automatically detect it.
+     */
+    entrypoint: string;
 };
 
 export type FreestyleDomainVerificationRequest = {
@@ -655,6 +665,23 @@ export type HandleExecuteScriptResponse = ({
 export type HandleExecuteScriptError = ({
     error: string;
     logs?: Array<FreestyleJavaScriptLog> | null;
+});
+
+export type HandleListIdentitiesData = {
+    query?: {
+        limit?: (number) | null;
+        offset?: (number) | null;
+    };
+};
+
+export type HandleListIdentitiesResponse = ({
+    identities: Array<GitIdentity>;
+    offset: number;
+    total: number;
+});
+
+export type HandleListIdentitiesError = ({
+    message: string;
 });
 
 export type HandleCreateIdentityResponse = (GitIdentity);
