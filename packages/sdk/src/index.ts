@@ -814,9 +814,12 @@ export class FreestyleSandboxes {
     } else if ("repoUrl" in repo) {
       const parts = repo.repoUrl.split("/");
       repoId = parts[parts.length - 1]; // Get the last part of the URL path
+    } else {
+      throw new Error("Either repoId or repoUrl must be provided");
     }
 
-    const repoUrl = process.env.GIT_URL ?? "https://git.freestyle.sh/" + repoId;
+    const repoUrl =
+      (process.env.GIT_URL ?? "https://git.freestyle.sh/") + repoId;
 
     const response = await sandbox_openapi.handleEphemeralDevServer({
       client: this.client,
@@ -842,7 +845,15 @@ export class FreestyleSandboxes {
       throw new Error(`Failed to request dev server: ${response.error}`);
     }
 
-    return response.data;
+    return {
+      ...response.data,
+      // @ts-ignore
+      mcpEphemeralUrl:
+        (response.data as unknown as Record<string, unknown>).mcpEphemeralUrl ||
+        response.data.url + "/mcp",
+      // @ts-ignore
+      ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
+    };
   }
 }
 
