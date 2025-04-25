@@ -807,7 +807,6 @@ export class FreestyleSandboxes {
     repoUrl?: string,
     repoId?: string, repo?: string
   }) {
-
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
         serverUrl +
@@ -820,7 +819,7 @@ export class FreestyleSandboxes {
       client: this.client,
       body: {
         // @ts-ignore
-        repo: repo || repoUrl,
+        repo: repoUrl,
         repoId: repoId,
       },
     });
