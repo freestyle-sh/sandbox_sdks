@@ -105,7 +105,14 @@ export type DescribePermissionResponseSuccess = {
 
 export type DevServer = {
     command?: (string) | null;
+    /**
+     * @deprecated
+     */
+    repo?: (string) | null;
     repoId?: (string) | null;
+    /**
+     * @deprecated
+     */
     domain?: (string) | null;
 };
 
@@ -610,10 +617,15 @@ export type HandleEphemeralDevServerData = {
 };
 
 export type HandleEphemeralDevServerResponse = ({
+    /**
+     * @deprecated
+     */
     url: string;
     isNew: boolean;
     devCommandRunning: boolean;
     installCommandRunning: boolean;
+    mcpEphemeralUrl?: (string) | null;
+    ephemeralUrl?: (string) | null;
 });
 
 export type HandleEphemeralDevServerError = (InternalServerError);
