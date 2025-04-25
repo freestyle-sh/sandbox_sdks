@@ -816,16 +816,14 @@ export class FreestyleSandboxes {
       return hook;
     }
 
-
     const response = await sandbox_openapi.handleEphemeralDevServer({
       client: this.client,
       body: {
         // @ts-ignore
         repo: repo || repoUrl,
         repoId: repoId,
-      }
+      },
     });
-
 
     if (response.data.isNew) {
       const rId = repoId || repoUrl.split("/").at(-1)!;
@@ -838,19 +836,18 @@ export class FreestyleSandboxes {
         },
         trigger: {
           event: "push",
-        }
+        },
       });
     }
 
     if (!response.data) {
-      throw new Error(
-        `Failed to request dev server: ${response.error}`,
-      )
+      throw new Error(`Failed to request dev server: ${response.error}`);
     }
     return {
       ...response.data,
       // @ts-ignore
-      mcpEphemeralUrl: response.data.mcpEphemeralUrl || response.data.url + "/mcp",
+      mcpEphemeralUrl:
+        (response.data as any).mcpEphemeralUrl || response.data.url + "/mcp",
       // @ts-ignore
       ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
     };
