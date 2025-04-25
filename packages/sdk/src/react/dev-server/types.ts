@@ -1,5 +1,5 @@
 export type RequestDevServerActions = {
     requestDevServer: (args: {
-        repoUrl: string;
+        repoId: string;
     }) => Promise<{ ephemeralUrl: string; devCommandRunning: boolean; installCommandRunning: boolean; }>;
 };

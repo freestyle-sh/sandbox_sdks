@@ -39,11 +39,11 @@ export function DefaultLoadingComponent({
 }
 
 export function FreestyleDevServer({
-  repoUrl,
   loadingComponent,
   actions,
+  repoId,
 }: {
-  repoUrl: string;
+  repoId: string;
   loadingComponent?: (props: {
     devCommandRunning: boolean;
     installCommandRunning: boolean;
@@ -55,7 +55,7 @@ export function FreestyleDevServer({
     <QueryClientProvider client={queryClient}>
       <FreestyleDevServerInner
         loadingComponent={loadingComponent ?? DefaultLoadingComponent}
-        repoUrl={repoUrl}
+        repoId={repoId}
         actions={actions}
       />
     </QueryClientProvider>
@@ -63,11 +63,11 @@ export function FreestyleDevServer({
 }
 
 function FreestyleDevServerInner({
-  repoUrl,
+  repoId,
   loadingComponent,
   actions: { requestDevServer },
 }: {
-  repoUrl: string;
+  repoId: string;
   loadingComponent: (props: {
     devCommandRunning: boolean;
     installCommandRunning: boolean;
@@ -76,8 +76,8 @@ function FreestyleDevServerInner({
   actions: RequestDevServerActions;
 }) {
   const { data, isLoading } = useQuery({
-    queryKey: ["dev-server", repoUrl],
-    queryFn: async () => await requestDevServer({ repoUrl: repoUrl }),
+    queryKey: ["dev-server", repoId],
+    queryFn: async () => await requestDevServer({ repoId: repoId }),
     refetchInterval: 1000,
   });
 

@@ -798,10 +798,15 @@ export class FreestyleSandboxes {
    * not store the url in your database!
    */
   async requestDevServer({
-    repo,
     repoUrl,
     repoId,
-  }: { repoUrl?: string, repoId?: string, repo?: string }) {
+  }: {
+    /**
+     * @deprecated
+     */
+    repoUrl?: string,
+    repoId?: string, repo?: string
+  }) {
 
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
@@ -828,7 +833,7 @@ export class FreestyleSandboxes {
       await this.createGitTrigger({
         repoId: rId,
         action: {
-          endpoint: formatHook(response.data?.url!, repoUrl || repo || `https://git.freestyle.sh/${rId}`),
+          endpoint: formatHook(response.data?.url!, repoUrl || `https://git.freestyle.sh/${rId}`),
           action: "webhook"
         },
         trigger: {
