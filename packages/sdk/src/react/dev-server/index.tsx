@@ -114,7 +114,9 @@ function FreestyleDevServerInner({
     });
   }
 
-  setWasLoaded(true);
+  React.useMemo(() => {
+    setWasLoaded(true);
+  });
 
   return (
     <iframe
