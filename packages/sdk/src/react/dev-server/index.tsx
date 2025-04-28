@@ -96,6 +96,8 @@ function FreestyleDevServerInner({
     return () => clearInterval(interval);
   }, [data?.ephemeralUrl]);
 
+  const [wasLoaded, setWasLoaded] = React.useState(false);
+
   if (isLoading) {
     return loadingComponent({
       devCommandRunning: false,
@@ -104,13 +106,15 @@ function FreestyleDevServerInner({
     });
   }
 
-  if (!data?.devCommandRunning) {
+  if (!data?.devCommandRunning && !wasLoaded) {
     return loadingComponent({
       devCommandRunning: data?.devCommandRunning ?? false,
       installCommandRunning: data?.installCommandRunning ?? false,
       serverStarting: false,
     });
   }
+
+  setWasLoaded(true);
 
   return (
     <iframe
