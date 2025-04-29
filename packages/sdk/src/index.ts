@@ -800,12 +800,14 @@ export class FreestyleSandboxes {
   async requestDevServer({
     repoUrl,
     repoId,
+    baseId,
   }: {
     /**
      * @deprecated
      */
     repoUrl?: string,
-    repoId?: string, repo?: string
+    repoId?: string, repo?: string,
+    baseId?: string,
   }) {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
@@ -821,6 +823,7 @@ export class FreestyleSandboxes {
         // @ts-ignore
         repo: repoUrl,
         repoId: repoId,
+        baseId: baseId
       },
     });
 
