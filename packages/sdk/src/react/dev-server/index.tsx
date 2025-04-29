@@ -3,8 +3,8 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
-import { RequestDevServerActions } from "./types";
 import React from "react";
+import { RequestDevServerActions } from "./types";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +14,7 @@ export function DefaultLoadingComponent({
   devCommandRunning: boolean;
   installCommandRunning: boolean;
   serverStarting: boolean;
+  iframeLoading: boolean;
 }) {
   let loadingText = "Starting container...";
 
@@ -48,6 +49,7 @@ export function FreestyleDevServer({
     devCommandRunning: boolean;
     installCommandRunning: boolean;
     serverStarting: boolean;
+    iframeLoading: boolean;
   }) => React.ReactNode;
   actions: RequestDevServerActions;
 }) {
@@ -72,6 +74,7 @@ function FreestyleDevServerInner({
     devCommandRunning: boolean;
     installCommandRunning: boolean;
     serverStarting: boolean;
+    iframeLoading: boolean;
   }) => React.ReactNode;
   actions: RequestDevServerActions;
 }) {
@@ -97,6 +100,7 @@ function FreestyleDevServerInner({
   }, [data?.ephemeralUrl]);
 
   const [wasLoaded, setWasLoaded] = React.useState(false);
+  const [iframeLoaded, setIframeLoaded] = React.useState(false);
 
   React.useMemo(() => {
     if (data?.devCommandRunning) {
@@ -104,11 +108,18 @@ function FreestyleDevServerInner({
     }
   }, [isLoading, data?.devCommandRunning]);
 
+  React.useEffect(() => {
+    ref.current?.addEventListener("load", () => {
+      setIframeLoaded(true);
+    });
+  }, [ref]);
+
   if (isLoading) {
     return loadingComponent({
       devCommandRunning: false,
       installCommandRunning: false,
       serverStarting: true,
+      iframeLoading: false,
     });
   }
 
@@ -117,19 +128,51 @@ function FreestyleDevServerInner({
       devCommandRunning: data?.devCommandRunning ?? false,
       installCommandRunning: data?.installCommandRunning ?? false,
       serverStarting: false,
+      iframeLoading: false,
     });
   }
 
   return (
-    <iframe
-      ref={ref}
-      sandbox="allow-scripts allow-same-origin allow-forms"
-      src={data.ephemeralUrl}
+    <div
       style={{
+        display: "grid",
+        gridTemplateRows: "1fr",
+        gridTemplateColumns: "1fr",
         width: "100%",
         height: "100%",
-        border: "none",
       }}
-    />
+    >
+      {
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            border: "none",
+            gridColumn: "1 / -1",
+            gridRow: "1 / -1",
+            visibility: iframeLoaded ? "hidden" : "visible",
+          }}
+        >
+          {loadingComponent({
+            devCommandRunning: data?.devCommandRunning ?? false,
+            installCommandRunning: data?.installCommandRunning ?? false,
+            serverStarting: false,
+            iframeLoading: true,
+          })}
+        </div>
+      }
+      <iframe
+        ref={ref}
+        sandbox="allow-scripts allow-same-origin allow-forms"
+        src={data.ephemeralUrl}
+        style={{
+          width: "100%",
+          height: "100%",
+          border: "none",
+          gridColumn: "1 / -1",
+          gridRow: "1 / -1",
+        }}
+      />
+    </div>
   );
 }
