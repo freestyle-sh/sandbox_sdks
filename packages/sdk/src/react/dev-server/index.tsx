@@ -98,6 +98,12 @@ function FreestyleDevServerInner({
 
   const [wasLoaded, setWasLoaded] = React.useState(false);
 
+  React.useMemo(() => {
+    if (data?.devCommandRunning) {
+      setWasLoaded(true);
+    }
+  }, [isLoading, data?.devCommandRunning]);
+
   if (isLoading) {
     return loadingComponent({
       devCommandRunning: false,
@@ -113,10 +119,6 @@ function FreestyleDevServerInner({
       serverStarting: false,
     });
   }
-
-  React.useMemo(() => {
-    setWasLoaded(true);
-  });
 
   return (
     <iframe
