@@ -19,6 +19,73 @@ export type AccessTokenInfo = {
 
 export type Behavior = 'regex' | 'exact';
 
+/**
+ * The encoding of a blob from the API. Always `base64`.
+ */
+export type BlobEncoding = 'base64';
+
+/**
+ * Blob object
+ */
+export type BlobObject = {
+    /**
+     * The content of the blob, base64 encoded.
+     */
+    content: string;
+    /**
+     * The encoding of the blob. Always `base64`.
+     */
+    encoding: BlobEncoding;
+    /**
+     * The object's hash.
+     */
+    sha: string;
+};
+
+/**
+ * Commit object
+ */
+export type CommitObject = {
+    /**
+     * The author of the commit
+     */
+    author: Signature;
+    /**
+     * The committer
+     */
+    committer: Signature;
+    /**
+     * The commit message
+     */
+    message: string;
+    /**
+     * The ID of the tree pointed to by this commit
+     */
+    tree: CommitTree;
+    /**
+     * Parent commit(s) of this commit
+     */
+    parents: Array<CommitParent>;
+    /**
+     * The commit's hash ID
+     */
+    sha: string;
+};
+
+export type CommitParent = {
+    /**
+     * The commit's hash ID
+     */
+    sha: string;
+};
+
+export type CommitTree = {
+    /**
+     * The tree's hash ID
+     */
+    sha: string;
+};
+
 export type CreateDomainMappingRequest = {
     deploymentId: string;
 };
@@ -62,6 +129,10 @@ export type type = 'git';
 
 export type CustomBuildOptions = {
     command?: (string) | null;
+    envVars?: {
+        [key: string]: (string);
+    } | null;
+    outDir?: (string) | null;
 };
 
 export type DeploymentBuildOptions = CustomBuildOptions | boolean;
@@ -104,16 +175,32 @@ export type DescribePermissionResponseSuccess = {
 };
 
 export type DevServer = {
-    command?: (string) | null;
-    /**
-     * @deprecated
-     */
-    repo?: (string) | null;
+    repoId: string;
+    kind: 'repo';
+};
+
+export type kind2 = 'repo';
+
+export type DevServerRequest = {
+    devCommand?: (string) | null;
+    preDevCommandOnce?: (string) | null;
+    baseId?: (string) | null;
+    envVars?: {
+        [key: string]: (string);
+    } | null;
     repoId?: (string) | null;
     /**
      * @deprecated
      */
     domain?: (string) | null;
+    /**
+     * @deprecated
+     */
+    repo?: (string) | null;
+};
+
+export type DevServerStatusRequest = {
+    devServer: DevServer;
 };
 
 export type DnsRecord = {
@@ -143,6 +230,15 @@ export type DomainVerificationRequest = {
     createdAt: number;
 };
 
+export type ExecRequest = {
+    devServer: DevServer;
+    command: string;
+    /**
+     * Spawn this command as a background process and return immediately
+     */
+    background: boolean;
+};
+
 export type ExecuteLogEntry = {
     deployment: string;
     accountId: string;
@@ -163,6 +259,17 @@ export type ExecuteRunInfo = {
 };
 
 export type ExecuteRunState = 'starting' | 'running' | 'complete';
+
+export type FileReadContent = {
+    content: string;
+    encoding: string;
+    kind: 'file';
+} | {
+    files: Array<(string)>;
+    kind: 'directory';
+};
+
+export type kind3 = 'file';
 
 export type FreestyleCloudstateDeployConfiguration = {
     /**
@@ -387,8 +494,14 @@ export type FreestyleVerifyDomainRequest = {
     id: string;
 };
 
+export type GitCommitPushRequest = {
+    devServer: DevServer;
+    message: string;
+};
+
 export type GitIdentity = {
     id: string;
+    managed: boolean;
 };
 
 export type GitRepositoryTrigger = {
@@ -445,6 +558,11 @@ export type NetworkPermissionData = {
     behavior?: Behavior;
 };
 
+export type ReadFileRequest = {
+    devServer: DevServer;
+    encoding?: string;
+};
+
 export type RepositoryInfo = {
     id: string;
     name?: (string) | null;
@@ -456,11 +574,82 @@ export type RevokeGitTokenRequest = {
     tokenId: string;
 };
 
+export type Signature = {
+    /**
+     * The date marker for this signature
+     */
+    date: string;
+    name: string;
+    email: string;
+};
+
+/**
+ * Tag object
+ */
+export type TagObject = {
+    /**
+     * The tag name
+     */
+    name: string;
+    tagger?: (null | Signature);
+    /**
+     * The tag message
+     */
+    message?: (string) | null;
+    /**
+     * The object this tag points to
+     */
+    target: TagTarget;
+    /**
+     * The tag's hash ID
+     */
+    sha: string;
+};
+
+export type TagTarget = {
+    /**
+     * The target object's hash ID
+     */
+    sha: string;
+};
+
+export type TreeEntry = {
+    path: string;
+    sha: string;
+    type: 'blob';
+} | {
+    path: string;
+    sha: string;
+    type: 'tree';
+};
+
+export type type2 = 'blob';
+
+/**
+ * Tree object
+ */
+export type TreeObject = {
+    /**
+     * The tree's entries
+     */
+    tree: Array<TreeEntry>;
+    /**
+     * The tree's hash ID
+     */
+    sha: string;
+};
+
 export type UpdatePermissionRequest = {
     permission: AccessLevel;
 };
 
 export type Visibility = 'public' | 'private';
+
+export type WriteFileRequest = {
+    devServer: DevServer;
+    content: string;
+    encoding?: string;
+};
 
 export type HandleDeployCloudstateData = {
     body: FreestyleCloudstateDeployRequest;
@@ -613,7 +802,7 @@ export type HandleDeleteDomainVerificationError = ({
 });
 
 export type HandleEphemeralDevServerData = {
-    body: DevServer;
+    body: DevServerRequest;
 };
 
 export type HandleEphemeralDevServerResponse = ({
@@ -629,6 +818,64 @@ export type HandleEphemeralDevServerResponse = ({
 });
 
 export type HandleEphemeralDevServerError = (InternalServerError);
+
+export type HandleExecOnEphemeralDevServerData = {
+    body: ExecRequest;
+};
+
+export type HandleExecOnEphemeralDevServerResponse = ({
+    id: string;
+    isNew: boolean;
+    stdout?: Array<(string)> | null;
+    stderr?: Array<(string)> | null;
+});
+
+export type HandleExecOnEphemeralDevServerError = (InternalServerError);
+
+export type HandleWriteFileFromEphemeralDevServerData = {
+    body: WriteFileRequest;
+};
+
+export type HandleWriteFileFromEphemeralDevServerResponse = ({
+    id: string;
+    isNew: boolean;
+});
+
+export type HandleWriteFileFromEphemeralDevServerError = (InternalServerError);
+
+export type HandleReadFileFromEphemeralDevServerData = {
+    body: ReadFileRequest;
+};
+
+export type HandleReadFileFromEphemeralDevServerResponse = ({
+    id: string;
+    isNew: boolean;
+    content?: (null | FileReadContent);
+});
+
+export type HandleReadFileFromEphemeralDevServerError = (InternalServerError);
+
+export type HandleGitCommitPushData = {
+    body: GitCommitPushRequest;
+};
+
+export type HandleGitCommitPushResponse = ({
+    id: string;
+    isNew: boolean;
+});
+
+export type HandleGitCommitPushError = (InternalServerError);
+
+export type HandleDevServerStatusData = {
+    body: DevServerStatusRequest;
+};
+
+export type HandleDevServerStatusResponse = ({
+    installing: boolean;
+    devRunning: boolean;
+});
+
+export type HandleDevServerStatusError = (InternalServerError);
 
 export type HandleListExecuteRunsData = {
     query?: {
@@ -681,6 +928,7 @@ export type HandleExecuteScriptError = ({
 
 export type HandleListIdentitiesData = {
     query?: {
+        includeManaged?: (boolean) | null;
         limit?: (number) | null;
         offset?: (number) | null;
     };
@@ -874,6 +1122,82 @@ export type HandleCreateRepoData = {
 export type HandleCreateRepoResponse = (CreateRepositoryResponseSuccess);
 
 export type HandleCreateRepoError = ({
+    message: string;
+});
+
+export type HandleGetBlobData = {
+    path: {
+        /**
+         * The blob hash
+         */
+        hash: string;
+        /**
+         * The repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type HandleGetBlobResponse = (BlobObject);
+
+export type HandleGetBlobError = ({
+    message: string;
+});
+
+export type HandleGetCommitData = {
+    path: {
+        /**
+         * The commit hash
+         */
+        hash: string;
+        /**
+         * The repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type HandleGetCommitResponse = (CommitObject);
+
+export type HandleGetCommitError = ({
+    message: string;
+});
+
+export type HandleGetTagData = {
+    path: {
+        /**
+         * The tag hash
+         */
+        hash: string;
+        /**
+         * The repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type HandleGetTagResponse = (TagObject);
+
+export type HandleGetTagError = ({
+    message: string;
+});
+
+export type HandleGetTreeData = {
+    path: {
+        /**
+         * The tree hash
+         */
+        hash: string;
+        /**
+         * The repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type HandleGetTreeResponse = (TreeObject);
+
+export type HandleGetTreeError = ({
     message: string;
 });
 
