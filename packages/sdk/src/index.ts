@@ -852,6 +852,7 @@ export class FreestyleSandboxes {
         (response.data as any).mcpEphemeralUrl || response.data.url + "/mcp",
       // @ts-ignore
       ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
+      codeServerUrl: response.data.ephemeralUrl + "/__freestyle_code_server/?folder=/template",
     };
   }
 }
