@@ -84,21 +84,7 @@ function FreestyleDevServerInner({
     refetchInterval: 1000,
   });
 
-  // keep reloading the iframe because there's a bug where the websocket
-  // connection to the dev server is closed every 1 minute
   const ref = React.useRef<HTMLIFrameElement>(null);
-  React.useEffect(() => {
-    if (!data?.ephemeralUrl) return;
-
-    const interval = setInterval(() => {
-      if (ref.current) {
-        ref.current.src = data.ephemeralUrl;
-      }
-    }, 45 * 1000);
-
-    return () => clearInterval(interval);
-  }, [data?.ephemeralUrl]);
-
   const [wasLoaded, setWasLoaded] = React.useState(false);
   const [iframeLoaded, setIframeLoaded] = React.useState(false);
 
@@ -109,9 +95,14 @@ function FreestyleDevServerInner({
   }, [isLoading, data?.devCommandRunning]);
 
   React.useEffect(() => {
-    ref.current?.addEventListener("load", () => {
+    function loadHandle() {
       setIframeLoaded(true);
-    });
+    }
+
+    ref.current?.addEventListener("load", loadHandle);
+    return () => {
+      ref.current?.removeEventListener("load", loadHandle);
+    };
   }, [ref]);
 
   if (isLoading) {

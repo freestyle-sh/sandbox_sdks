@@ -797,17 +797,14 @@ export class FreestyleSandboxes {
    * ephemeral so you should call this function every time you need a url. Do
    * not store the url in your database!
    */
-  async requestDevServer({
-    repoUrl,
-    repoId,
-    baseId,
-  }: {
+  async requestDevServer(options: {
     /**
      * @deprecated
      */
     repoUrl?: string,
     repoId?: string, repo?: string,
     baseId?: string,
+    devCommand?: string,
   }) {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
@@ -820,20 +817,19 @@ export class FreestyleSandboxes {
     const response = await sandbox_openapi.handleEphemeralDevServer({
       client: this.client,
       body: {
+        ...options,
         // @ts-ignore
-        repo: repoUrl,
-        repoId: repoId,
-        baseId: baseId
+        repo: options.repoUrl,
       },
     });
 
     if (response.data.isNew) {
-      const rId = repoId || repoUrl.split("/").at(-1)!;
+      const rId = options.repoId || options.repoUrl.split("/").at(-1)!;
 
       await this.createGitTrigger({
         repoId: rId,
         action: {
-          endpoint: formatHook(response.data?.url!, repoUrl || `https://git.freestyle.sh/${rId}`),
+          endpoint: formatHook(response.data?.url!, options.repoUrl || `https://git.freestyle.sh/${rId}`),
           action: "webhook"
         },
         trigger: {
@@ -850,9 +846,9 @@ export class FreestyleSandboxes {
       // @ts-ignore
       mcpEphemeralUrl:
         (response.data as any).mcpEphemeralUrl || response.data.url + "/mcp",
-      // @ts-ignore
       ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
-      codeServerUrl: response.data.ephemeralUrl + "/__freestyle_code_server/?folder=/template",
+      // @ts-ignore
+      codeServerUrl: response.data.codeServerUrl ?? response.data.ephemeralUrl + "/__freestyle_code_server/?folder=/template",
     };
   }
 }
