@@ -39,54 +39,80 @@ export function DefaultLoadingComponent({
   );
 }
 
-export function FreestyleDevServer({
-  loadingComponent,
-  actions,
-  repoId,
-}: {
-  repoId: string;
-  loadingComponent?: (props: {
-    devCommandRunning: boolean;
-    installCommandRunning: boolean;
-    serverStarting: boolean;
-    iframeLoading: boolean;
-  }) => React.ReactNode;
-  actions: RequestDevServerActions;
-}) {
+export interface FreestyleDevServerHandle {
+  refresh: () => void;
+}
+
+export const FreestyleDevServer = React.forwardRef<
+  FreestyleDevServerHandle,
+  {
+    repoId: string;
+    loadingComponent?: (props: {
+      devCommandRunning: boolean;
+      installCommandRunning: boolean;
+      serverStarting: boolean;
+      iframeLoading: boolean;
+    }) => React.ReactNode;
+    actions: RequestDevServerActions;
+  }
+>(({ loadingComponent, actions, repoId }, ref) => {
   return (
     <QueryClientProvider client={queryClient}>
       <FreestyleDevServerInner
+        ref={ref}
         loadingComponent={loadingComponent ?? DefaultLoadingComponent}
         repoId={repoId}
         actions={actions}
       />
     </QueryClientProvider>
   );
-}
+});
 
-function FreestyleDevServerInner({
-  repoId,
-  loadingComponent,
-  actions: { requestDevServer },
-}: {
-  repoId: string;
-  loadingComponent: (props: {
-    devCommandRunning: boolean;
-    installCommandRunning: boolean;
-    serverStarting: boolean;
-    iframeLoading: boolean;
-  }) => React.ReactNode;
-  actions: RequestDevServerActions;
-}) {
+const FreestyleDevServerInner = React.forwardRef<
+  FreestyleDevServerHandle,
+  {
+    repoId: string;
+    loadingComponent: (props: {
+      devCommandRunning: boolean;
+      installCommandRunning: boolean;
+      serverStarting: boolean;
+      iframeLoading: boolean;
+    }) => React.ReactNode;
+    actions: RequestDevServerActions;
+  }
+>(({ repoId, loadingComponent, actions: { requestDevServer } }, ref) => {
   const { data, isLoading } = useQuery({
     queryKey: ["dev-server", repoId],
     queryFn: async () => await requestDevServer({ repoId: repoId }),
     refetchInterval: 1000,
   });
 
-  const ref = React.useRef<HTMLIFrameElement>(null);
+  const iframeRef = React.useRef<HTMLIFrameElement>(null);
   const [wasLoaded, setWasLoaded] = React.useState(false);
   const [iframeLoaded, setIframeLoaded] = React.useState(false);
+  
+  // Function to refresh the iframe
+  const refreshIframe = React.useCallback(() => {
+    if (iframeRef.current && data?.ephemeralUrl) {
+      setIframeLoaded(false);
+      const currentSrc = iframeRef.current.src;
+      iframeRef.current.src = "";
+      setTimeout(() => {
+        if (iframeRef.current) {
+          iframeRef.current.src = currentSrc;
+        }
+      }, 50);
+    }
+  }, [data?.ephemeralUrl]);
+  
+  // Expose refresh method through ref
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      refresh: refreshIframe,
+    }),
+    [refreshIframe]
+  );
 
   React.useMemo(() => {
     if (data?.devCommandRunning) {
@@ -99,11 +125,11 @@ function FreestyleDevServerInner({
       setIframeLoaded(true);
     }
 
-    ref.current?.addEventListener("load", loadHandle);
+    iframeRef.current?.addEventListener("load", loadHandle);
     return () => {
-      ref.current?.removeEventListener("load", loadHandle);
+      iframeRef.current?.removeEventListener("load", loadHandle);
     };
-  }, [ref]);
+  }, []);
 
   if (isLoading) {
     return loadingComponent({
@@ -153,7 +179,7 @@ function FreestyleDevServerInner({
         </div>
       }
       <iframe
-        ref={ref}
+        ref={iframeRef}
         sandbox="allow-scripts allow-same-origin allow-forms"
         src={data.ephemeralUrl}
         style={{
@@ -166,4 +192,4 @@ function FreestyleDevServerInner({
       />
     </div>
   );
-}
+});
