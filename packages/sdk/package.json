@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.66",
+  "version": "0.0.68",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -97,6 +97,7 @@
   "dependencies": {
     "@hey-api/client-fetch": "^0.5.7",
     "@tanstack/react-query": "^5.74.4",
+    "@types/react": "*",
     "expo-router": "^4.0.20",
     "freestyle-sandboxes": "^0.0.66",
     "glob": "^11.0.1",
