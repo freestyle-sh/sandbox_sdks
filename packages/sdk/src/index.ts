@@ -801,10 +801,11 @@ export class FreestyleSandboxes {
     /**
      * @deprecated
      */
-    repoUrl?: string,
-    repoId?: string, repo?: string,
-    baseId?: string,
-    devCommand?: string,
+    repoUrl?: string;
+    repoId?: string;
+    repo?: string;
+    baseId?: string;
+    devCommand?: string;
   }) {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
@@ -823,14 +824,24 @@ export class FreestyleSandboxes {
       },
     });
 
+    if (response.error) {
+      throw new Error(
+        // @ts-ignore
+        `Failed to request dev server: ${response.error.message}`
+      );
+    }
+
     if (response.data.isNew) {
       const rId = options.repoId || options.repoUrl.split("/").at(-1)!;
 
       await this.createGitTrigger({
         repoId: rId,
         action: {
-          endpoint: formatHook(response.data?.url!, options.repoUrl || `https://git.freestyle.sh/${rId}`),
-          action: "webhook"
+          endpoint: formatHook(
+            response.data?.url!,
+            options.repoUrl || `https://git.freestyle.sh/${rId}`
+          ),
+          action: "webhook",
         },
         trigger: {
           event: "push",
@@ -847,8 +858,11 @@ export class FreestyleSandboxes {
       mcpEphemeralUrl:
         (response.data as any).mcpEphemeralUrl || response.data.url + "/mcp",
       ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
-      // @ts-ignore
-      codeServerUrl: response.data.codeServerUrl ?? response.data.ephemeralUrl + "/__freestyle_code_server/?folder=/template",
+      codeServerUrl:
+        // @ts-ignore
+        response.data.codeServerUrl ??
+        response.data.ephemeralUrl +
+          "/__freestyle_code_server/?folder=/template",
     };
   }
 }
