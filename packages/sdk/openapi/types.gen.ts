@@ -189,6 +189,11 @@ export type DevServerRequest = {
         [key: string]: (string);
     } | null;
     repoId?: (string) | null;
+    computeClass?: (string) | null;
+    /**
+     * Timeout in seconds
+     */
+    timeout?: (number) | null;
     /**
      * @deprecated
      */
@@ -504,6 +509,20 @@ export type GitIdentity = {
     managed: boolean;
 };
 
+/**
+ * A reference to a Git object
+ */
+export type GitReference = {
+    /**
+     * The name of the ref (e.g., "refs/heads/main" or "refs/tags/v1.0.0")
+     */
+    name: string;
+    /**
+     * The SHA-1 hash of the Git object this reference points to
+     */
+    sha: string;
+};
+
 export type GitRepositoryTrigger = {
     repositoryId: string;
     trigger: ({
@@ -572,6 +591,13 @@ export type RepositoryInfo = {
 
 export type RevokeGitTokenRequest = {
     tokenId: string;
+};
+
+export type ShutdownDevServerRequest = {
+    /**
+     * The dev server to shutdown
+     */
+    devServer: DevServer;
 };
 
 export type Signature = {
@@ -834,6 +860,9 @@ export type HandleExecOnEphemeralDevServerError = (InternalServerError);
 
 export type HandleWriteFileFromEphemeralDevServerData = {
     body: WriteFileRequest;
+    path: {
+        filepath: unknown;
+    };
 };
 
 export type HandleWriteFileFromEphemeralDevServerResponse = ({
@@ -845,15 +874,28 @@ export type HandleWriteFileFromEphemeralDevServerError = (InternalServerError);
 
 export type HandleReadFileFromEphemeralDevServerData = {
     body: ReadFileRequest;
+    path: {
+        filepath: unknown;
+    };
 };
 
 export type HandleReadFileFromEphemeralDevServerResponse = ({
     id: string;
     isNew: boolean;
-    content?: (null | FileReadContent);
+    content: ({
+    content: string;
+    encoding: string;
+    kind: 'file';
+} | {
+    files: Array<(string)>;
+    kind: 'directory';
+});
 });
 
-export type HandleReadFileFromEphemeralDevServerError = (InternalServerError);
+export type HandleReadFileFromEphemeralDevServerError = ({
+    id: string;
+    isNew: boolean;
+} | InternalServerError);
 
 export type HandleGitCommitPushData = {
     body: GitCommitPushRequest;
@@ -865,6 +907,19 @@ export type HandleGitCommitPushResponse = ({
 });
 
 export type HandleGitCommitPushError = (InternalServerError);
+
+export type HandleShutdownDevServerData = {
+    body: ShutdownDevServerRequest;
+};
+
+export type HandleShutdownDevServerResponse = ({
+    success: boolean;
+    message: string;
+});
+
+export type HandleShutdownDevServerError = ({
+    message: string;
+} | InternalServerError);
 
 export type HandleDevServerStatusData = {
     body: DevServerStatusRequest;
@@ -1125,82 +1180,6 @@ export type HandleCreateRepoError = ({
     message: string;
 });
 
-export type HandleGetBlobData = {
-    path: {
-        /**
-         * The blob hash
-         */
-        hash: string;
-        /**
-         * The repository ID
-         */
-        repo_id: string;
-    };
-};
-
-export type HandleGetBlobResponse = (BlobObject);
-
-export type HandleGetBlobError = ({
-    message: string;
-});
-
-export type HandleGetCommitData = {
-    path: {
-        /**
-         * The commit hash
-         */
-        hash: string;
-        /**
-         * The repository ID
-         */
-        repo_id: string;
-    };
-};
-
-export type HandleGetCommitResponse = (CommitObject);
-
-export type HandleGetCommitError = ({
-    message: string;
-});
-
-export type HandleGetTagData = {
-    path: {
-        /**
-         * The tag hash
-         */
-        hash: string;
-        /**
-         * The repository ID
-         */
-        repo_id: string;
-    };
-};
-
-export type HandleGetTagResponse = (TagObject);
-
-export type HandleGetTagError = ({
-    message: string;
-});
-
-export type HandleGetTreeData = {
-    path: {
-        /**
-         * The tree hash
-         */
-        hash: string;
-        /**
-         * The repository ID
-         */
-        repo_id: string;
-    };
-};
-
-export type HandleGetTreeResponse = (TreeObject);
-
-export type HandleGetTreeError = ({
-    message: string;
-});
-
 export type HandleDeleteRepoData = {
     path: {
         /**
@@ -1218,6 +1197,97 @@ export type HandleDeleteRepoError = ({
     message: string;
 } | {
     [key: string]: unknown;
+});
+
+export type HandleGetBlobData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+};
+
+export type HandleGetBlobResponse = (BlobObject);
+
+export type HandleGetBlobError = ({
+    message: string;
+});
+
+export type HandleGetCommitData = {
+    path: {
+        /**
+         * The object's hash
+         */
+        hash: string;
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+};
+
+export type HandleGetCommitResponse = (CommitObject);
+
+export type HandleGetCommitError = ({
+    message: string;
+});
+
+export type HandleGetRefBranchData = {
+    path: {
+        /**
+         * The branch's name
+         */
+        branch: string;
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+};
+
+export type HandleGetRefBranchResponse = (GitReference);
+
+export type HandleGetRefBranchError = (unknown | {
+    message: string;
+});
+
+export type HandleGetTagData = {
+    path: {
+        /**
+         * The object's hash
+         */
+        hash: string;
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+};
+
+export type HandleGetTagResponse = (TagObject);
+
+export type HandleGetTagError = ({
+    message: string;
+});
+
+export type HandleGetTreeData = {
+    path: {
+        /**
+         * The object's hash
+         */
+        hash: string;
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+};
+
+export type HandleGetTreeResponse = (TreeObject);
+
+export type HandleGetTreeError = ({
+    message: string;
 });
 
 export type HandleListGitTriggersData = {
@@ -1294,6 +1364,25 @@ export type HandleGetLogsData = {
 export type HandleGetLogsResponse = (FreestyleGetLogsResponse);
 
 export type HandleGetLogsError = unknown;
+
+export type HandleGetRefTagData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+        /**
+         * The tag's name
+         */
+        tag: string;
+    };
+};
+
+export type HandleGetRefTagResponse = (GitReference);
+
+export type HandleGetRefTagError = (unknown | {
+    message: string;
+});
 
 export type HandleDeployWebData = {
     body: FreestyleDeployWebPayload;

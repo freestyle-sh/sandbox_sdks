@@ -6,6 +6,7 @@ import type {
   CreatedToken,
   CreateRepositoryResponseSuccess,
   DescribePermissionResponseSuccess,
+  DevServer,
   FreestyleCloudstateDeployRequest,
   FreestyleCloudstateDeploySuccessResponse,
   FreestyleDeployWebConfiguration,
@@ -30,6 +31,7 @@ import type {
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
 } from "../openapi/index.ts";
+import { FreestyleDevServer } from "./dev-server.ts";
 
 export type {
   AccessLevel,
@@ -106,7 +108,7 @@ export class FreestyleSandboxes {
    */
   async executeScript(
     script: string,
-    config?: FreestyleExecuteScriptParamsConfiguration
+    config?: FreestyleExecuteScriptParamsConfiguration,
   ): Promise<FreestyleExecuteScriptResultSuccess> {
     const response = await sandbox_openapi.handleExecuteScript({
       client: this.client,
@@ -121,7 +123,7 @@ export class FreestyleSandboxes {
     }
     throw {
       message: `Failed to execute script: \n\n${script}\n\nError:\n\n${JSON.stringify(
-        response
+        response,
       )}`,
       error: response.error,
     };
@@ -135,7 +137,7 @@ export class FreestyleSandboxes {
    */
   async deployWeb(
     source: sandbox_openapi.DeploymentSource,
-    config?: FreestyleDeployWebConfiguration
+    config?: FreestyleDeployWebConfiguration,
   ): Promise<FreestyleDeployWebSuccessResponseV2> {
     const response = await sandbox_openapi.handleDeployWebV2({
       client: this.client,
@@ -148,7 +150,7 @@ export class FreestyleSandboxes {
       return response.data;
     }
     throw new Error(
-      `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`
+      `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`,
     );
   }
 
@@ -156,7 +158,7 @@ export class FreestyleSandboxes {
    * Deploy a Cloudstate project to a sandbox.
    */
   async deployCloudstate(
-    body: FreestyleCloudstateDeployRequest
+    body: FreestyleCloudstateDeployRequest,
   ): Promise<FreestyleCloudstateDeploySuccessResponse> {
     const response = await sandbox_openapi.handleDeployCloudstate({
       client: this.client,
@@ -219,7 +221,7 @@ export class FreestyleSandboxes {
    * @returns The domain verification token.
    */
   async createDomainVerificationRequest(
-    domain: string
+    domain: string,
   ): Promise<HandleCreateDomainVerificationResponse> {
     const response = await sandbox_openapi.handleCreateDomainVerification({
       client: this.client,
@@ -240,7 +242,7 @@ export class FreestyleSandboxes {
    * @returns The domain verification request.
    */
   async verifyDomain(
-    domain: string
+    domain: string,
   ): Promise<HandleVerifyDomainResponse | HandleVerifyDomainError> {
     const response = await sandbox_openapi.handleVerifyDomain({
       client: this.client,
@@ -252,7 +254,7 @@ export class FreestyleSandboxes {
       return response.data;
     }
     throw new Error(
-      `Failed to verify domain ${domain}: ${response.error.message}`
+      `Failed to verify domain ${domain}: ${response.error.message}`,
     );
   }
 
@@ -271,20 +273,20 @@ export class FreestyleSandboxes {
     const response = await sandbox_openapi.handleListDomainVerificationRequests(
       {
         client: this.client,
-      }
+      },
     );
     if (response.data) {
       return response.data;
     }
 
     throw new Error(
-      `Failed to list domain verification requests\n${response.error.message}`
+      `Failed to list domain verification requests\n${response.error.message}`,
     );
   }
 
   async deleteDomainVerificationRequest(
     domain: string,
-    verificationCode: string
+    verificationCode: string,
   ): Promise<HandleDeleteDomainVerificationResponse> {
     const response = await sandbox_openapi.handleDeleteDomainVerification({
       client: this.client,
@@ -298,13 +300,13 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`
+      `Failed to delete domain verification request for domain ${domain}: ${response.error.message}`,
     );
   }
 
   async listWebDeployments(
     limit?: number,
-    offset?: number
+    offset?: number,
   ): Promise<HandleListWebDeploysResponse> {
     const response = await sandbox_openapi.handleListWebDeploys({
       client: this.client,
@@ -319,13 +321,13 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list web deployments\n${response.error.message}`
+      `Failed to list web deployments\n${response.error.message}`,
     );
   }
 
   async listExecuteRuns(
     limit?: number,
-    offset?: number
+    offset?: number,
   ): Promise<HandleListExecuteRunsResponse> {
     const response = await sandbox_openapi.handleListExecuteRuns({
       client: this.client,
@@ -353,7 +355,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to get execute run with ID ${id}: ${response.error.message}`
+      `Failed to get execute run with ID ${id}: ${response.error.message}`,
     );
   }
 
@@ -371,7 +373,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to provision wildcard for domain ${domain}: ${response.error.message}`
+      `Failed to provision wildcard for domain ${domain}: ${response.error.message}`,
     );
   }
 
@@ -406,7 +408,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to create git repository ${name}: ${response.error}`
+      `Failed to create git repository ${name}: ${response.error}`,
     );
   }
 
@@ -455,7 +457,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete git repository ${repoId}: ${response.error}`
+      `Failed to delete git repository ${repoId}: ${response.error}`,
     );
   }
 
@@ -524,7 +526,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to grant access to git identity ${identityId} for repository ${repoId}: ${response.error}`
+      `Failed to grant access to git identity ${identityId} for repository ${repoId}: ${response.error}`,
     );
   }
 
@@ -556,7 +558,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to update permission for git identity ${identityId} for repository ${repoId}: ${response.error}`
+      `Failed to update permission for git identity ${identityId} for repository ${repoId}: ${response.error}`,
     );
   }
 
@@ -583,7 +585,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to revoke access to git identity ${identityId} for repository ${repoId}: ${response.error}`
+      `Failed to revoke access to git identity ${identityId} for repository ${repoId}: ${response.error}`,
     );
   }
 
@@ -607,7 +609,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list permissions for git identity ${identityId}: ${response.error}`
+      `Failed to list permissions for git identity ${identityId}: ${response.error}`,
     );
   }
 
@@ -634,7 +636,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to get permission for git identity ${identityId} on repository ${repoId}: ${response.error}`
+      `Failed to get permission for git identity ${identityId} on repository ${repoId}: ${response.error}`,
     );
   }
 
@@ -658,7 +660,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to create git access token: ${response.error.message}`
+      `Failed to create git access token: ${response.error.message}`,
     );
   }
 
@@ -687,7 +689,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to revoke git access token ${tokenId}: ${response.error.message}`
+      `Failed to revoke git access token ${tokenId}: ${response.error.message}`,
     );
   }
 
@@ -711,7 +713,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list git access tokens: ${response.error.message}`
+      `Failed to list git access tokens: ${response.error.message}`,
     );
   }
 
@@ -735,7 +737,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to list git triggers for repository ${repoId}: ${response.error.message}`
+      `Failed to list git triggers for repository ${repoId}: ${response.error.message}`,
     );
   }
 
@@ -767,7 +769,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to create git trigger for repository ${repoId}: ${response.error.message}`
+      `Failed to create git trigger for repository ${repoId}: ${response.error.message}`,
     );
   }
 
@@ -787,7 +789,7 @@ export class FreestyleSandboxes {
     }
 
     throw new Error(
-      `Failed to delete git trigger ${triggerId}: ${response.error.message}`
+      `Failed to delete git trigger ${triggerId}: ${response.error.message}`,
     );
   }
 
@@ -806,7 +808,11 @@ export class FreestyleSandboxes {
     repo?: string;
     baseId?: string;
     devCommand?: string;
-  }) {
+    preDevCommandOnce?: string;
+    envVars?: Record<string, string>;
+    computeClass?: string;
+    timeout?: number;
+  }): Promise<FreestyleDevServer> {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
         serverUrl +
@@ -827,19 +833,19 @@ export class FreestyleSandboxes {
     if (response.error) {
       throw new Error(
         // @ts-ignore
-        `Failed to request dev server: ${response.error.message}`
+        `Failed to request dev server: ${response.error.message}`,
       );
     }
 
     if (response.data.isNew) {
-      const rId = options.repoId || options.repoUrl.split("/").at(-1)!;
+      const rId = options.repoId || options.repoUrl?.split("/").at(-1)!;
 
       await this.createGitTrigger({
         repoId: rId,
         action: {
           endpoint: formatHook(
             response.data?.url!,
-            options.repoUrl || `https://git.freestyle.sh/${rId}`
+            options.repoUrl || `https://git.freestyle.sh/${rId}`,
           ),
           action: "webhook",
         },
@@ -852,19 +858,198 @@ export class FreestyleSandboxes {
     if (!response.data) {
       throw new Error(`Failed to request dev server: ${response.error}`);
     }
+
+    const data: typeof response.data & { codeServerUrl?: string } =
+      response.data;
+
+    const devServerInstance: DevServer = {
+      repoId: options.repoId || options.repo || "",
+      kind: "repo",
+    };
+
+    const client = this.client;
+
     return {
-      ...response.data,
-      // @ts-ignore
-      mcpEphemeralUrl:
-        (response.data as any).mcpEphemeralUrl || response.data.url + "/mcp",
-      ephemeralUrl: response.data.ephemeralUrl ?? response.data.url,
+      isNew: data.isNew,
+
+      ephemeralUrl: data.ephemeralUrl ?? data.url,
+
+      mcpEphemeralUrl: data.mcpEphemeralUrl ?? data.url + "/mcp",
+
       codeServerUrl:
-        // @ts-ignore
-        response.data.codeServerUrl ??
-        response.data.ephemeralUrl +
+        data.codeServerUrl ??
+        (data.ephemeralUrl ?? data.url) +
           "/__freestyle_code_server/?folder=/template",
+
+      async status() {
+        const response = await sandbox_openapi.handleDevServerStatus({
+          client,
+          body: {
+            devServer: devServerInstance,
+          },
+        });
+
+        if (response.error) {
+          throw new Error(`Failed to get status: ${response.error}`);
+        }
+
+        return {
+          installing: response.data.installing,
+          devRunning: response.data.devRunning,
+        };
+      },
+
+      async commitAndPush(message: string) {
+        const response = await sandbox_openapi.handleGitCommitPush({
+          client,
+          body: {
+            devServer: devServerInstance,
+            message,
+          },
+        });
+
+        if (response.error) {
+          throw new Error(`Failed to commit and push: ${response.error}`);
+        }
+      },
+
+      async shutdown() {
+        const response = await sandbox_openapi.handleShutdownDevServer({
+          client,
+          body: {
+            devServer: devServerInstance,
+          },
+        });
+
+        if (response.error) {
+          throw new Error(`Failed to shutdown dev server: ${response.error}`);
+        }
+
+        return {
+          success: response.data.success,
+          message: response.data.message,
+        };
+      },
+
+      fs: {
+        async ls(path = "") {
+          const response =
+            await sandbox_openapi.handleReadFileFromEphemeralDevServer({
+              client,
+              path: {
+                filepath: path,
+              },
+              body: {
+                devServer: devServerInstance,
+                encoding: "utf-8",
+              },
+            });
+
+          if (response.error) {
+            throw new Error(`Failed to list directory: ${response.error}`);
+          }
+
+          if (!response.data?.content) {
+            return [];
+          }
+
+          if (response.data.content.kind === "directory") {
+            return response.data.content.files;
+          }
+
+          return [];
+        },
+
+        async readFile(path: string, encoding = "utf-8") {
+          const response =
+            await sandbox_openapi.handleReadFileFromEphemeralDevServer({
+              client,
+              path: {
+                filepath: path,
+              },
+              body: {
+                devServer: devServerInstance,
+                encoding,
+              },
+            });
+
+          if (response.error) {
+            throw new Error(`Failed to read file: ${response.error}`);
+          }
+
+          if (
+            !response.data?.content ||
+            response.data.content.kind !== "file"
+          ) {
+            throw new Error(`Not a file or file not found: ${path}`);
+          }
+
+          return response.data.content.content;
+        },
+
+        async writeFile(
+          path: string,
+          content: string | ArrayBuffer,
+          encoding = "utf-8",
+        ) {
+          const contentStr =
+            typeof content === "string"
+              ? content
+              : new TextDecoder(encoding).decode(content);
+
+          const response =
+            await sandbox_openapi.handleWriteFileFromEphemeralDevServer({
+              client,
+              path: {
+                filepath: path,
+              },
+              body: {
+                devServer: devServerInstance,
+                content: contentStr,
+                encoding,
+              },
+            });
+
+          if (response.error) {
+            throw new Error(`Failed to write file: ${response.error}`);
+          }
+        },
+      },
+
+      process: {
+        async exec(cmd: string, background = false) {
+          const response = await sandbox_openapi.handleExecOnEphemeralDevServer(
+            {
+              client,
+              body: {
+                devServer: devServerInstance,
+                command: cmd,
+                background,
+              },
+            },
+          );
+
+          if (response.error) {
+            throw new Error(`Failed to execute command: ${response.error}`);
+          }
+
+          return {
+            id: response.data.id,
+            isNew: response.data.isNew,
+            stdout: response.data.stdout,
+            stderr: response.data.stderr,
+          };
+        },
+      },
     };
   }
 }
 
 export * from "../openapi/types.gen.ts";
+
+// const { process, fs } = await api.requestDevServer({
+//   repoId: "test",
+// });
+//
+// await process.exec()
+// await fs.ls()
