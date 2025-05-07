@@ -90,7 +90,7 @@ const FreestyleDevServerInner = React.forwardRef<
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
   const [wasLoaded, setWasLoaded] = React.useState(false);
   const [iframeLoaded, setIframeLoaded] = React.useState(false);
-  
+
   // Function to refresh the iframe
   const refreshIframe = React.useCallback(() => {
     if (iframeRef.current && data?.ephemeralUrl) {
@@ -104,14 +104,14 @@ const FreestyleDevServerInner = React.forwardRef<
       }, 50);
     }
   }, [data?.ephemeralUrl]);
-  
+
   // Expose refresh method through ref
   React.useImperativeHandle(
     ref,
     () => ({
       refresh: refreshIframe,
     }),
-    [refreshIframe]
+    [refreshIframe],
   );
 
   React.useMemo(() => {
