@@ -208,6 +208,10 @@ export type DevServerStatusRequest = {
     devServer: DevServer;
 };
 
+export type DevServerWatchFilesRequest = {
+    devServer: DevServer;
+};
+
 export type DnsRecord = {
     kind: DnsRecordKind;
     name: string;
@@ -232,7 +236,7 @@ export type DomainVerificationRequest = {
     domain: string;
     accountId: string;
     verificationCode: string;
-    createdAt: number;
+    createdAt: string;
 };
 
 export type ExecRequest = {
@@ -504,6 +508,54 @@ export type GitCommitPushRequest = {
     message: string;
 };
 
+export type GitContents = {
+    name: string;
+    path: string;
+    /**
+     * The hash / object ID of the file.
+     */
+    sha: string;
+    size: number;
+    /**
+     * Base64-encoded content.
+     */
+    content: string;
+    type: 'file';
+} | {
+    name: string;
+    path: string;
+    /**
+     * The hash / object ID of the directory.
+     */
+    sha: string;
+    entries: Array<GitContentsDirEntryItem>;
+    type: 'dir';
+};
+
+export type type2 = 'file';
+
+export type GitContentsDirEntryItem = {
+    name: string;
+    path: string;
+    /**
+     * The hash / object ID of the file.
+     */
+    sha: string;
+    size: number;
+    type: 'file';
+} | {
+    name: string;
+    path: string;
+    /**
+     * The hash / object ID of the directory.
+     */
+    sha: string;
+    entries: Array<({
+    [key: string]: unknown;
+})>;
+    type: 'dir';
+};
+
 export type GitIdentity = {
     id: string;
     managed: boolean;
@@ -536,7 +588,7 @@ export type GitRepositoryTrigger = {
 });
     managed: boolean;
     id: string;
-    createdAt: number;
+    createdAt: string;
 };
 
 export type event = 'push';
@@ -576,6 +628,22 @@ export type NetworkPermissionData = {
     query: string;
     behavior?: Behavior;
 };
+
+export type ReadFileEphemeralDevServerResponses = {
+    id: string;
+    isNew: boolean;
+    content: ({
+    content: string;
+    encoding: string;
+    kind: 'file';
+} | {
+    files: Array<(string)>;
+    kind: 'directory';
+});
+} | {
+    id: string;
+    isNew: boolean;
+} | InternalServerError;
 
 export type ReadFileRequest = {
     devServer: DevServer;
@@ -649,7 +717,7 @@ export type TreeEntry = {
     type: 'tree';
 };
 
-export type type2 = 'blob';
+export type type3 = 'blob';
 
 /**
  * Tree object
@@ -750,7 +818,7 @@ export type HandleVerifyWildcardError = ({
 
 export type HandleListDomainsResponse = (Array<{
     domain: string;
-    createdAt: number;
+    createdAt: string;
 }>);
 
 export type HandleListDomainsError = ({
@@ -785,7 +853,7 @@ export type HandleDeleteDomainMappingError = ({
 export type HandleListDomainVerificationRequestsResponse = (Array<{
     verificationCode: string;
     domain: string;
-    createdAt: number;
+    createdAt: string;
 }>);
 
 export type HandleListDomainVerificationRequestsError = ({
@@ -860,9 +928,6 @@ export type HandleExecOnEphemeralDevServerError = (InternalServerError);
 
 export type HandleWriteFileFromEphemeralDevServerData = {
     body: WriteFileRequest;
-    path: {
-        filepath: unknown;
-    };
 };
 
 export type HandleWriteFileFromEphemeralDevServerResponse = ({
@@ -874,9 +939,6 @@ export type HandleWriteFileFromEphemeralDevServerError = (InternalServerError);
 
 export type HandleReadFileFromEphemeralDevServerData = {
     body: ReadFileRequest;
-    path: {
-        filepath: unknown;
-    };
 };
 
 export type HandleReadFileFromEphemeralDevServerResponse = ({
@@ -931,6 +993,14 @@ export type HandleDevServerStatusResponse = ({
 });
 
 export type HandleDevServerStatusError = (InternalServerError);
+
+export type HandleWatchDevServerFilesData = {
+    body: DevServerWatchFilesRequest;
+};
+
+export type HandleWatchDevServerFilesResponse = (string);
+
+export type HandleWatchDevServerFilesError = unknown;
 
 export type HandleListExecuteRunsData = {
     query?: {
@@ -1199,6 +1269,31 @@ export type HandleDeleteRepoError = ({
     [key: string]: unknown;
 });
 
+export type HandleGetContentsData = {
+    path: {
+        /**
+         * The path to the file or directory. Empty for root.
+         */
+        '*path': (string) | null;
+        /**
+         * The repository ID.
+         */
+        repo: string;
+    };
+    query?: {
+        /**
+         * The git reference (branch name, commit SHA, etc.). Defaults to HEAD.
+         */
+        ref?: string;
+    };
+};
+
+export type HandleGetContentsResponse = (GitContents);
+
+export type HandleGetContentsError = ({
+    message: string;
+});
+
 export type HandleGetBlobData = {
     path: {
         /**
@@ -1287,6 +1382,27 @@ export type HandleGetTreeData = {
 export type HandleGetTreeResponse = (TreeObject);
 
 export type HandleGetTreeError = ({
+    message: string;
+});
+
+export type HandleDownloadTarballData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+    query?: {
+        /**
+         * The git reference (branch name, commit SHA, etc.). Defaults to HEAD.
+         */
+        ref?: string;
+    };
+};
+
+export type HandleDownloadTarballResponse = (unknown);
+
+export type HandleDownloadTarballError = ({
     message: string;
 });
 
