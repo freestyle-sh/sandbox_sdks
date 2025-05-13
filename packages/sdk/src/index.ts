@@ -890,6 +890,7 @@ export class FreestyleSandboxes {
     const that = this;
 
     return {
+      ...response.data,
       isNew: data.isNew,
 
       ephemeralUrl: data.ephemeralUrl ?? data.url,
