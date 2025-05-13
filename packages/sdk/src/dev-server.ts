@@ -68,8 +68,10 @@ export interface FreestyleDevServerFilesystem {
   writeFile(
     path: string,
     content: string | ArrayBufferLike,
-    encoding?: string,
+    encoding?: string
   ): Promise<void>;
+
+  watch(): AsyncGenerator<{ eventType: string; filename: string }>;
 }
 
 export interface FreestyleDevServerProcess {
@@ -80,7 +82,7 @@ export interface FreestyleDevServerProcess {
    */
   exec(
     cmd: string,
-    background?: boolean,
+    background?: boolean
   ): Promise<{
     id: string;
     isNew: boolean;
