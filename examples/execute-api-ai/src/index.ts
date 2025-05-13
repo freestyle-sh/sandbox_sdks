@@ -31,10 +31,6 @@ const { text, steps } = await generateText({
   maxRetries: 0,
   prompt:
     "Send an email to ben@freestyle.sh from ai@swerdlow.dev with a joke about computer science people not getting laid. make it rude.",
-  // "Send an email to melvin@reworks.ai from ai@swerdlow.dev with a yo mamma joke about CRMs and AI. Make it snappy and rude.",
-  // "Get @jonytf's recent github activity using ocotokit. Send an email using resend.emails.send to jonathan@fixa.dev from ai@swerdlow.dev with a detailed explaination of why he should be fired because of lack of good work. Refer to specific recent activity.",
-  // "Send han@mintlify.com an email from ai@swerdlow.dev with a yo mamma joke about developer docs.",
-  // "Get @handotdev's recent github activity. Send an email to ben@freestyle.sh from ai@swerdlow.dev with a roast of his recent activity. Make it specific.",
 });
 
 console.log(JSON.stringify(steps, null, 2));
