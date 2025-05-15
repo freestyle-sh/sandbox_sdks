@@ -1076,12 +1076,12 @@ export class FreestyleSandboxes {
         async writeFile(
           path: string,
           content: string | ArrayBuffer,
-          encoding = "utf-8"
+          encoding: BufferEncoding = "utf-8"
         ) {
           const contentStr =
             typeof content === "string"
               ? content
-              : new TextDecoder(encoding).decode(content);
+              : Buffer.from(content).toString(encoding);
 
           const response =
             await sandbox_openapi.handleWriteFileFromEphemeralDevServer({
