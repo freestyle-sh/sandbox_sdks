@@ -31,7 +31,13 @@ import type {
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
 } from "../openapi/index.ts";
-import { FreestyleDevServer } from "./dev-server.ts";
+
+import {
+  FreestyleDevServer,
+  FreestyleDevServerFilesystem,
+} from "./dev-server.ts";
+
+export type { FreestyleDevServer, FreestyleDevServerFilesystem };
 
 export type {
   AccessLevel,
