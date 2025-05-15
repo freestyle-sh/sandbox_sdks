@@ -1097,7 +1097,9 @@ export class FreestyleSandboxes {
             });
 
           if (response.error) {
-            throw new Error(`Failed to write file: ${response.error}`);
+            throw new Error(
+              `Failed to write file: ${JSON.stringify(response.error)}`
+            );
           }
         },
       },
