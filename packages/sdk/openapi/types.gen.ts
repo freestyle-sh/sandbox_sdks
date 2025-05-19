@@ -161,6 +161,7 @@ export type DeploymentSource = {
 } | {
     url: string;
     branch?: (string) | null;
+    dir?: (string) | null;
     kind: 'git';
 };
 
@@ -1347,6 +1348,25 @@ export type HandleGetRefBranchError = (unknown | {
     message: string;
 });
 
+export type HandleGetRefTagData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+        /**
+         * The tag's name
+         */
+        tag: string;
+    };
+};
+
+export type HandleGetRefTagResponse = (GitReference);
+
+export type HandleGetRefTagError = (unknown | {
+    message: string;
+});
+
 export type HandleGetTagData = {
     path: {
         /**
@@ -1480,25 +1500,6 @@ export type HandleGetLogsData = {
 export type HandleGetLogsResponse = (FreestyleGetLogsResponse);
 
 export type HandleGetLogsError = unknown;
-
-export type HandleGetRefTagData = {
-    path: {
-        /**
-         * The repository id
-         */
-        repo: string;
-        /**
-         * The tag's name
-         */
-        tag: string;
-    };
-};
-
-export type HandleGetRefTagResponse = (GitReference);
-
-export type HandleGetRefTagError = (unknown | {
-    message: string;
-});
 
 export type HandleDeployWebData = {
     body: FreestyleDeployWebPayload;
