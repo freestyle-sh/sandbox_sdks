@@ -100,8 +100,43 @@ export type CreateRecordParams = {
     record: DnsRecordData;
 };
 
+export type CreateRepoImport = {
+    files: {
+        [key: string]: (string);
+    };
+    commit_message: string;
+    author_name?: (string) | null;
+    author_email?: (string) | null;
+    type: 'files';
+} | {
+    url: string;
+    dir?: (string) | null;
+    commit_message: string;
+    author_name?: (string) | null;
+    author_email?: (string) | null;
+    type: 'tar';
+} | {
+    url: string;
+    dir?: (string) | null;
+    commit_message: string;
+    author_name?: (string) | null;
+    author_email?: (string) | null;
+    type: 'zip';
+} | {
+    url: string;
+    branch?: (string) | null;
+    dir?: (string) | null;
+    commit_message: string;
+    author_name?: (string) | null;
+    author_email?: (string) | null;
+    type: 'git';
+};
+
+export type type = 'files';
+
 export type CreateRepoRequest = {
     source?: (null | CreateRepoSource);
+    import?: (null | CreateRepoImport);
 };
 
 export type CreateRepositoryRequest = {
@@ -112,6 +147,7 @@ export type CreateRepositoryRequest = {
     name?: (string) | null;
     public?: boolean;
     source?: CreateRepoSource;
+    import?: CreateRepoImport;
 };
 
 export type CreateRepositoryResponseSuccess = {
@@ -125,7 +161,7 @@ export type CreateRepoSource = {
     type: 'git';
 };
 
-export type type = 'git';
+export type type2 = 'git';
 
 export type CustomBuildOptions = {
     command?: (string) | null;
@@ -135,7 +171,7 @@ export type CustomBuildOptions = {
     outDir?: (string) | null;
 };
 
-export type DeploymentBuildOptions = CustomBuildOptions | boolean;
+export type DeploymentBuildOptions = (CustomBuildOptions) | boolean;
 
 export type DeploymentLogEntry = {
     deploymentId: string;
@@ -161,6 +197,7 @@ export type DeploymentSource = {
 } | {
     url: string;
     branch?: (string) | null;
+    dir?: (string) | null;
     kind: 'git';
 };
 
@@ -532,7 +569,7 @@ export type GitContents = {
     type: 'dir';
 };
 
-export type type2 = 'file';
+export type type3 = 'file';
 
 export type GitContentsDirEntryItem = {
     name: string;
@@ -717,7 +754,7 @@ export type TreeEntry = {
     type: 'tree';
 };
 
-export type type3 = 'blob';
+export type type4 = 'blob';
 
 /**
  * Tree object
@@ -1225,6 +1262,7 @@ export type HandleListRepositoriesData = {
 
 export type HandleListRepositoriesResponse = ({
     repositories: Array<RepositoryInfo>;
+    total: number;
     offset: number;
 });
 
@@ -1241,6 +1279,7 @@ export type HandleCreateRepoData = {
         name?: (string) | null;
         public?: boolean;
         source?: CreateRepoSource;
+        import?: CreateRepoImport;
     };
 };
 
@@ -1344,6 +1383,25 @@ export type HandleGetRefBranchData = {
 export type HandleGetRefBranchResponse = (GitReference);
 
 export type HandleGetRefBranchError = (unknown | {
+    message: string;
+});
+
+export type HandleGetRefTagData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+        /**
+         * The tag's name
+         */
+        tag: string;
+    };
+};
+
+export type HandleGetRefTagResponse = (GitReference);
+
+export type HandleGetRefTagError = (unknown | {
     message: string;
 });
 
@@ -1470,6 +1528,27 @@ export type HandleDeleteGitTriggerError = ({
     [key: string]: unknown;
 });
 
+export type HandleDownloadZipData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+    query?: {
+        /**
+         * The git reference (branch name, commit SHA, etc.). Defaults to HEAD.
+         */
+        ref?: string;
+    };
+};
+
+export type HandleDownloadZipResponse = (unknown);
+
+export type HandleDownloadZipError = ({
+    message: string;
+});
+
 export type HandleGetLogsData = {
     query?: {
         deploymentId?: (string) | null;
@@ -1480,25 +1559,6 @@ export type HandleGetLogsData = {
 export type HandleGetLogsResponse = (FreestyleGetLogsResponse);
 
 export type HandleGetLogsError = unknown;
-
-export type HandleGetRefTagData = {
-    path: {
-        /**
-         * The repository id
-         */
-        repo: string;
-        /**
-         * The tag's name
-         */
-        tag: string;
-    };
-};
-
-export type HandleGetRefTagResponse = (GitReference);
-
-export type HandleGetRefTagError = (unknown | {
-    message: string;
-});
 
 export type HandleDeployWebData = {
     body: FreestyleDeployWebPayload;

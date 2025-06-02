@@ -23,6 +23,9 @@ export interface FreestyleDevServer {
 
   process: FreestyleDevServerProcess;
 
+  devCommandRunning: boolean;
+  installCommandRunning: boolean;
+
   /**
    * Get the status of the dev server
    */
