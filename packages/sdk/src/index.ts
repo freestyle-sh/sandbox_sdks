@@ -70,6 +70,34 @@ export type {
   DeploymentBuildOptions,
 } from "../openapi/index.ts";
 
+/**
+ * Create a new git repository with a single commit from a static import.
+ */
+type CreateGitRepositoryImport = {
+  /**
+   * Create a new git repository with a single commit from a static import.
+   */
+  import: sandbox_openapi.CreateRepoImport;
+  /**
+   * Create a git repository from another git reopsitory
+   */
+  source?: never;
+};
+
+/**
+ * Create a git repository from another git reopsitory
+ */
+type CreateGitRepositorySource = {
+  /**
+   * Create a git repository from another git reopsitory
+   */
+  source: sandbox_openapi.CreateRepoSource;
+  /**
+   * Create a new git repository with a single commit from a static import.
+   */
+  import?: never;
+};
+
 type Options = {
   /**
    * The base URL for the API.
@@ -405,22 +433,21 @@ export class FreestyleSandboxes {
     name,
     public: pub = false,
     source,
+    import: _import,
   }: {
-    name: string;
+    name?: string;
     public?: boolean;
-    source?: {
-      type: "git";
-      url: string;
-      branch?: string;
-      depth?: number;
-    };
-  }): Promise<CreateRepositoryResponseSuccess> {
+  } & (
+    | CreateGitRepositorySource
+    | CreateGitRepositoryImport
+  )): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,
       body: {
         name,
         public: pub,
         source,
+        import: _import,
       },
     });
 
