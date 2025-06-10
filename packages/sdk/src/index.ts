@@ -287,23 +287,23 @@ export class FreestyleSandboxes {
 
   /**
    * Verify a domain. Note, this requires the domain verification token to be already set up.
-   * @param domain The domain to verify.
+   * @param domain The domain to verify or the verification request ID.
    * @returns The domain verification request.
    */
   async verifyDomain(
-    domain: string,
+    domainOrVerificationRequestId: string,
   ): Promise<HandleVerifyDomainResponse | HandleVerifyDomainError> {
     const response = await sandbox_openapi.handleVerifyDomain({
       client: this.client,
       body: {
-        domain: domain,
+        domain: domainOrVerificationRequestId,
       },
     });
     if (response.data) {
       return response.data;
     }
     throw new Error(
-      `Failed to verify domain ${domain}: ${response.error.message}`,
+      `Failed to verify domain or verification request ${domainOrVerificationRequestId}: ${response.error.message}`,
     );
   }
 
