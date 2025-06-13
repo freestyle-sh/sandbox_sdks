@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.78",
+  "version": "0.0.80",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

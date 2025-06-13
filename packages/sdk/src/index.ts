@@ -123,11 +123,6 @@ export class FreestyleSandboxes {
     if (!options?.apiKey) {
       this.options.apiKey = process.env.FREESTYLE_API_KEY;
     }
-    if (!this.options.apiKey) {
-      throw new Error(
-        "No API key provided. Please set the FREESTYLE_API_KEY environment variable or configure apiKey when constructing FreestyleSandboxes."
-      );
-    }
 
     //@ts-expect-error Deno has a weird behavior thats patched here
     if (typeof Deno !== "undefined") {
