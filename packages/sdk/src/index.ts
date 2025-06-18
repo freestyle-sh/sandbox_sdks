@@ -855,6 +855,149 @@ export class FreestyleSandboxes {
   }
 
   /**
+   * Set the default branch for a git repository.
+   */
+  async setGitRepoDefaultBranch({
+    repoId,
+    defaultBranch,
+  }: sandbox_openapi.SetDefaultBranchRequest & {
+    repoId: string;
+  }): Promise<void> {
+    const response = await sandbox_openapi.handleSetDefaultBranch({
+      client: this.client,
+      path: {
+        repo_id: repoId,
+      },
+      body: {
+        defaultBranch,
+      },
+    });
+
+    if (response.error) {
+      throw new Error(`Failed to set default branch: ${response.error}`);
+    }
+  }
+
+  /**
+   * Get the default branch for a git repository.
+   */
+  async getGitRepoDefaultBranch({
+    repoId,
+  }: {
+    repoId: string;
+  }): Promise<string> {
+    const response = await sandbox_openapi.handleGetDefaultBranch({
+      client: this.client,
+      path: { repo_id: repoId },
+    });
+
+    if (response.data) {
+      return response.data.defaultBranch;
+    }
+
+    throw new Error(
+      `Failed to get default branch for repository ${repoId}: ${response.error}`,
+    );
+  }
+
+  /**
+   * Get the contents of a git repository at the given path.
+   */
+  async getGitRepoContents({
+    repoId,
+    path,
+    ref,
+  }: {
+    repoId: string;
+    path?: string;
+    ref?: string;
+  }): Promise<sandbox_openapi.HandleGetContentsResponse> {
+    const response = await sandbox_openapi.handleGetContents({
+      client: this.client,
+      path: {
+        repo: repoId,
+        "*path": path ?? null,
+      },
+      query: {
+        ref: ref,
+      },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(
+      `Failed to get git repository contents: ${response.error.message}`,
+    );
+  }
+
+  /**
+   * Configure a git repository to sync with GitHub.
+   */
+  async configureGitRepoGitHubSync({
+    repoId,
+    githubRepoName,
+  }: {
+    repoId: string;
+    githubRepoName: string;
+  }): Promise<void> {
+    const response = await sandbox_openapi.configureGithubSync({
+      client: this.client,
+      path: {
+        repo_id: repoId,
+      },
+      body: {
+        githubRepoName,
+      },
+    });
+
+    if (response.error) {
+      throw new Error(`Failed to configure GitHub sync: ${response.error}`);
+    }
+  }
+
+  /**
+   * Remove the GitHub sync configuration for a git repository.
+   */
+  async removeGitRepoGitHubSync({ repoId }: { repoId: string }): Promise<void> {
+    const response = await sandbox_openapi.removeGithubSync({
+      client: this.client,
+      path: {
+        repo_id: repoId,
+      },
+    });
+
+    if (response.error) {
+      throw new Error(`Failed to remove GitHub sync: ${response.error}`);
+    }
+  }
+
+  /**
+   * Get the GitHub sync configuration for a git repository.
+   */
+  async getGitRepoGitHubSyncConfig({
+    repoId,
+  }): Promise<sandbox_openapi.GetGithubSyncResponse | null> {
+    const response = await sandbox_openapi.getGithubSync({
+      client: this.client,
+      path: {
+        repo_id: repoId,
+      },
+    });
+
+    if (response.response.status === 404) {
+      return null;
+    }
+
+    if (response.error) {
+      throw new Error(`Failed to get GitHub sync config: ${response.error}`);
+    }
+
+    return response.data ?? null;
+  }
+
+  /**
    * Request a dev server for a repository. If a dev server is already running
    * for that repository, it will return a url to that server. Dev servers are
    * ephemeral so you should call this function every time you need a url. Do

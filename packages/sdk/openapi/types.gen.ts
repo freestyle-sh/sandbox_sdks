@@ -42,6 +42,12 @@ export type BlobObject = {
     sha: string;
 };
 
+export type BranchDetails = {
+    default: boolean;
+    name: string;
+    target?: (string) | null;
+};
+
 /**
  * Commit object
  */
@@ -84,6 +90,13 @@ export type CommitTree = {
      * The tree's hash ID
      */
     sha: string;
+};
+
+export type ConfigureGithubSyncRequest = {
+    /**
+     * The GitHub repository name in "owner/repo" format
+     */
+    githubRepoName: string;
 };
 
 export type CreateDomainMappingRequest = {
@@ -137,6 +150,7 @@ export type type = 'files';
 export type CreateRepoRequest = {
     source?: (null | CreateRepoSource);
     import?: (null | CreateRepoImport);
+    defaultBranch?: (string) | null;
 };
 
 export type CreateRepositoryRequest = {
@@ -146,6 +160,10 @@ export type CreateRepositoryRequest = {
      */
     name?: (string) | null;
     public?: boolean;
+    /**
+     * The default branch name for the repository. Defaults to "main" if not specified.
+     */
+    defaultBranch?: (string) | null;
     source?: CreateRepoSource;
     import?: CreateRepoImport;
 };
@@ -466,7 +484,7 @@ export type FreestyleExecuteScriptParamsConfiguration = {
     /**
      * The script timeout
      */
-    timeout?: (string) | null;
+    timeout?: (number) | null;
     /**
      * If false, we'll not resolve peer dependencies for the packages given, this can speed up execute performance, but will break packages with peers unless the peers are manually specified.
      */
@@ -540,6 +558,10 @@ export type FreestyleVerifyDomainRequest = {
     id: string;
 };
 
+export type GetDefaultBranchResponse = {
+    defaultBranch: string;
+};
+
 export type GitCommitPushRequest = {
     devServer: DevServer;
     message: string;
@@ -591,6 +613,19 @@ export type GitContentsDirEntryItem = {
     [key: string]: unknown;
 })>;
     type: 'dir';
+};
+
+export type GithubRepoSyncConfig = {
+    freestyleRepoId: string;
+    accountId: string;
+    installationId: number;
+    githubRepoId: number;
+    githubRepoName: string;
+    createdAt: string;
+};
+
+export type GithubSyncConfigResponse = {
+    githubRepoName: string;
 };
 
 export type GitIdentity = {
@@ -692,10 +727,29 @@ export type RepositoryInfo = {
     name?: (string) | null;
     accountId: string;
     visibility: Visibility;
+    defaultBranch: string;
+};
+
+export type RepositoryMetadata = {
+    branches: {
+        [key: string]: BranchDetails;
+    };
+    tags: {
+        [key: string]: TagDetails;
+    };
+    defaultBranch: string;
 };
 
 export type RevokeGitTokenRequest = {
     tokenId: string;
+};
+
+export type SetDefaultBranchRequest = {
+    defaultBranch: string;
+};
+
+export type SetDefaultBranchResponse = {
+    [key: string]: unknown;
 };
 
 export type ShutdownDevServerRequest = {
@@ -712,6 +766,12 @@ export type Signature = {
     date: string;
     name: string;
     email: string;
+};
+
+export type TagDetails = {
+    name: string;
+    target: string;
+    message?: (string) | null;
 };
 
 /**
@@ -1261,7 +1321,7 @@ export type HandleListRepositoriesData = {
 };
 
 export type HandleListRepositoriesResponse = ({
-    repositories: Array<RepositoryInfo>;
+    repositories: Array<RepositoryMetadata>;
     total: number;
     offset: number;
 });
@@ -1278,6 +1338,10 @@ export type HandleCreateRepoData = {
          */
         name?: (string) | null;
         public?: boolean;
+        /**
+         * The default branch name for the repository. Defaults to "main" if not specified.
+         */
+        defaultBranch?: (string) | null;
         source?: CreateRepoSource;
         import?: CreateRepoImport;
     };
@@ -1288,6 +1352,73 @@ export type HandleCreateRepoResponse = (CreateRepositoryResponseSuccess);
 export type HandleCreateRepoError = ({
     message: string;
 });
+
+export type HandleGetDefaultBranchData = {
+    path: {
+        /**
+         * The repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type HandleGetDefaultBranchResponse = (GetDefaultBranchResponse);
+
+export type HandleGetDefaultBranchError = unknown;
+
+export type HandleSetDefaultBranchData = {
+    body: SetDefaultBranchRequest;
+    path: {
+        /**
+         * The repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type HandleSetDefaultBranchResponse = (SetDefaultBranchResponse);
+
+export type HandleSetDefaultBranchError = unknown;
+
+export type GetGithubSyncData = {
+    path: {
+        /**
+         * Repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type GetGithubSyncResponse = (GithubSyncConfigResponse);
+
+export type GetGithubSyncError = (unknown);
+
+export type ConfigureGithubSyncData = {
+    body: ConfigureGithubSyncRequest;
+    path: {
+        /**
+         * Repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type ConfigureGithubSyncResponse = (unknown);
+
+export type ConfigureGithubSyncError = (unknown);
+
+export type RemoveGithubSyncData = {
+    path: {
+        /**
+         * Repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type RemoveGithubSyncResponse = (unknown);
+
+export type RemoveGithubSyncError = (unknown);
 
 export type HandleDeleteRepoData = {
     path: {
