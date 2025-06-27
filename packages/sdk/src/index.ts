@@ -450,6 +450,7 @@ export class FreestyleSandboxes {
   }: {
     name?: string;
     public?: boolean;
+    defaultBranch?: string;
   } & (
     | CreateGitRepositorySource
     | CreateGitRepositoryImport

@@ -257,6 +257,7 @@ export type DevServerRequest = {
      * @deprecated
      */
     repo?: (string) | null;
+    gitRef?: (string) | null;
 };
 
 export type DevServerStatusRequest = {
