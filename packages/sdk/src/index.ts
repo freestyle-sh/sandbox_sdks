@@ -447,6 +447,7 @@ export class FreestyleSandboxes {
     public: pub = false,
     source,
     import: _import,
+    defaultBranch,
   }: {
     name?: string;
     public?: boolean;
@@ -462,6 +463,7 @@ export class FreestyleSandboxes {
         public: pub,
         source,
         import: _import,
+        defaultBranch,
       },
     });
 
