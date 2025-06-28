@@ -68,6 +68,11 @@ export type {
   ListGitTokensResponseSuccess,
   ListPermissionResponseSuccess,
   DeploymentBuildOptions,
+  DeploymentSource,
+  HandleListDomainMappingsResponse,
+  HandleListDomainMappingsData,
+  HandleInsertDomainMappingResponse,
+  HandleDeleteDomainMappingResponse,
 } from "../openapi/index.ts";
 
 /**
@@ -471,25 +476,20 @@ export class FreestyleSandboxes {
    */
   async removeDomainMapping({
     domain,
-    deploymentId,
   }: {
     domain: string;
-    deploymentId: string;
   }): Promise<sandbox_openapi.HandleDeleteDomainMappingResponse> {
     const response = await sandbox_openapi.handleDeleteDomainMapping({
       client: this.client,
       path: {
         domain,
       },
-      body: {
-        deploymentId,
-      },
     });
     if (response.data) {
       return response.data;
     }
     throw new Error(
-      `Failed to remove domain mapping for domain ${domain} and deployment ${deploymentId}: ${response.error.message}`
+      `Failed to remove domain mapping for domain ${domain}: ${response.error.message}`
     );
   }
 
