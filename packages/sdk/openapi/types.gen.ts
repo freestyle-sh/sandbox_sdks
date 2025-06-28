@@ -550,6 +550,14 @@ export type FreestyleNetworkPermission = (NetworkPermissionData & {
 
 export type action = 'allow';
 
+export type FreestyleSandboxDomainMapping = {
+    id: string;
+    domain: string;
+    deploymentId: string;
+    ownershipId: string;
+    createdAt: string;
+};
+
 /**
  * Verify a domain verification request, can either be done for a domain, or for a specific request
  */
@@ -900,6 +908,19 @@ export type HandleDeleteRecordError = ({
     message: string;
 });
 
+export type HandleListDomainMappingsData = {
+    query?: {
+        domain?: (string) | null;
+        domainOwnership?: (string) | null;
+        limit?: (number) | null;
+        offset?: (number) | null;
+    };
+};
+
+export type HandleListDomainMappingsResponse = (Array<FreestyleSandboxDomainMapping>);
+
+export type HandleListDomainMappingsError = (unknown);
+
 export type HandleVerifyWildcardData = {
     path: {
         domain: string;
@@ -914,9 +935,24 @@ export type HandleVerifyWildcardError = ({
     message: string;
 });
 
+export type HandleListDomainsData = {
+    query?: {
+        implicitlyOwned?: (boolean) | null;
+        limit?: (number) | null;
+        offset?: (number) | null;
+    };
+};
+
 export type HandleListDomainsResponse = (Array<{
     domain: string;
+    accountId: string;
     createdAt: string;
+    id: string;
+    verifiedDns: boolean;
+    implicitlyOwned: boolean;
+    deployToDomain: boolean;
+    manageDns: boolean;
+    deployToSubdomains: boolean;
 }>);
 
 export type HandleListDomainsError = ({
