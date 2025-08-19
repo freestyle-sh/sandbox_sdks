@@ -516,7 +516,9 @@ export class FreestyleSandboxes {
     if (response.data) {
       return response.data;
     }
-    throw new Error(`Failed to list domain mappings: ${response.error}`);
+    throw new Error(
+      `Failed to list domain mappings: ${JSON.stringify(response.error)}`
+    );
   }
 
   /**
@@ -535,6 +537,7 @@ export class FreestyleSandboxes {
   } & (
     | CreateGitRepositorySource
     | CreateGitRepositoryImport
+    | { source: never; import: never }
   )): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,

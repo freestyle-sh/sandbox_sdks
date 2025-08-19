@@ -1,6 +1,6 @@
 {
   "name": "freestyle-sandboxes",
-  "version": "0.0.90",
+  "version": "0.0.93",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -87,8 +87,8 @@
   "description": "",
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.60.1",
-    "@langchain/core": "^0.3.38",
-    "@langchain/langgraph": "^0.2.44",
+    "@langchain/core": "^0.3.66",
+    "@langchain/langgraph": "^0.4.2",
     "@mastra/core": "^0.6.0",
     "ai": "^4.3.4",
     "humanlayer": "^0.7.0",

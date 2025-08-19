@@ -48,6 +48,29 @@ export type BranchDetails = {
     target?: (string) | null;
 };
 
+export type CommitList = {
+    /**
+     * List of commits
+     */
+    commits: Array<CommitObject>;
+    /**
+     * Number of commits returned in this page
+     */
+    count: number;
+    /**
+     * Number of commits skipped (offset)
+     */
+    offset: number;
+    /**
+     * Maximum number of commits requested (limit)
+     */
+    limit: number;
+    /**
+     * Total number of commits available in the branch
+     */
+    total: number;
+};
+
 /**
  * Commit object
  */
@@ -114,34 +137,37 @@ export type CreateRecordParams = {
 };
 
 export type CreateRepoImport = {
+    /**
+     * A map of file names to their contents.
+     */
     files: {
         [key: string]: (string);
     };
-    commit_message: string;
-    author_name?: (string) | null;
-    author_email?: (string) | null;
+    commitMessage: string;
+    authorName?: (string) | null;
+    authorEmail?: (string) | null;
     type: 'files';
 } | {
     url: string;
     dir?: (string) | null;
-    commit_message: string;
-    author_name?: (string) | null;
-    author_email?: (string) | null;
+    commitMessage: string;
+    authorName?: (string) | null;
+    authorEmail?: (string) | null;
     type: 'tar';
 } | {
     url: string;
     dir?: (string) | null;
-    commit_message: string;
-    author_name?: (string) | null;
-    author_email?: (string) | null;
+    commitMessage: string;
+    authorName?: (string) | null;
+    authorEmail?: (string) | null;
     type: 'zip';
 } | {
     url: string;
     branch?: (string) | null;
     dir?: (string) | null;
-    commit_message: string;
-    author_name?: (string) | null;
-    author_email?: (string) | null;
+    commitMessage: string;
+    authorName?: (string) | null;
+    authorEmail?: (string) | null;
     type: 'git';
 };
 
@@ -164,7 +190,13 @@ export type CreateRepositoryRequest = {
      * The default branch name for the repository. Defaults to "main" if not specified.
      */
     defaultBranch?: (string) | null;
+    /**
+     * Fork from another Git repository. Cannot be used with `import`.
+     */
     source?: CreateRepoSource;
+    /**
+     * Import static content with an initial commit. Cannot be used with `source`.
+     */
     import?: CreateRepoImport;
 };
 
@@ -176,10 +208,7 @@ export type CreateRepoSource = {
     url: string;
     branch?: (string) | null;
     depth?: (number) | null;
-    type: 'git';
 };
-
-export type type2 = 'git';
 
 export type CustomBuildOptions = {
     command?: (string) | null;
@@ -231,6 +260,7 @@ export type DescribePermissionResponseSuccess = {
 
 export type DevServer = {
     repoId: string;
+    gitRef?: (string) | null;
     kind: 'repo';
     gitRef?: string;
 };
@@ -240,6 +270,9 @@ export type kind2 = 'repo';
 export type DevServerRequest = {
     devCommand?: (string) | null;
     preDevCommandOnce?: (string) | null;
+    /**
+     * @deprecated
+     */
     baseId?: (string) | null;
     envVars?: {
         [key: string]: (string);
@@ -378,7 +411,7 @@ export type FreestyleDeleteDomainVerificationRequest = {
 
 export type FreestyleDeployWebConfiguration = {
     /**
-     * The entrypoint file for the website
+     * The entrypoint file for the website, if none is provided, we will try to automatically detect it.
      */
     entrypoint?: (string) | null;
     /**
@@ -601,7 +634,7 @@ export type GitContents = {
     type: 'dir';
 };
 
-export type type3 = 'file';
+export type type2 = 'file';
 
 export type GitContentsDirEntryItem = {
     name: string;
@@ -727,11 +760,6 @@ export type ReadFileEphemeralDevServerResponses = {
     isNew: boolean;
 } | InternalServerError;
 
-export type ReadFileRequest = {
-    devServer: DevServer;
-    encoding?: string;
-};
-
 export type RepositoryInfo = {
     id: string;
     name?: (string) | null;
@@ -824,7 +852,7 @@ export type TreeEntry = {
     type: 'tree';
 };
 
-export type type4 = 'blob';
+export type type3 = 'blob';
 
 /**
  * Tree object
@@ -845,12 +873,6 @@ export type UpdatePermissionRequest = {
 };
 
 export type Visibility = 'public' | 'private';
-
-export type WriteFileRequest = {
-    devServer: DevServer;
-    content: string;
-    encoding?: string;
-};
 
 export type HandleDeployCloudstateData = {
     body: FreestyleCloudstateDeployRequest;
@@ -909,19 +931,6 @@ export type HandleDeleteRecordError = ({
     message: string;
 });
 
-export type HandleListDomainMappingsData = {
-    query?: {
-        domain?: (string) | null;
-        domainOwnership?: (string) | null;
-        limit?: (number) | null;
-        offset?: (number) | null;
-    };
-};
-
-export type HandleListDomainMappingsResponse = (Array<FreestyleSandboxDomainMapping>);
-
-export type HandleListDomainMappingsError = (unknown);
-
 export type HandleVerifyWildcardData = {
     path: {
         domain: string;
@@ -960,6 +969,19 @@ export type HandleListDomainsError = ({
     message: string;
 });
 
+export type HandleListDomainMappingsData = {
+    query?: {
+        domain?: (string) | null;
+        domainOwnership?: (string) | null;
+        limit?: (number) | null;
+        offset?: (number) | null;
+    };
+};
+
+export type HandleListDomainMappingsResponse = (Array<FreestyleSandboxDomainMapping>);
+
+export type HandleListDomainMappingsError = (unknown);
+
 export type HandleInsertDomainMappingData = {
     body: CreateDomainMappingRequest;
     path: {
@@ -967,7 +989,7 @@ export type HandleInsertDomainMappingData = {
     };
 };
 
-export type HandleInsertDomainMappingResponse = (unknown);
+export type HandleInsertDomainMappingResponse = (FreestyleSandboxDomainMapping);
 
 export type HandleInsertDomainMappingError = ({
     message: string;
@@ -1062,7 +1084,12 @@ export type HandleExecOnEphemeralDevServerResponse = ({
 export type HandleExecOnEphemeralDevServerError = (InternalServerError);
 
 export type HandleWriteFileFromEphemeralDevServerData = {
-    body: WriteFileRequest;
+    path: {
+        /**
+         * The path to the file to read from the dev server
+         */
+        filepath: string;
+    };
 };
 
 export type HandleWriteFileFromEphemeralDevServerResponse = ({
@@ -1073,7 +1100,12 @@ export type HandleWriteFileFromEphemeralDevServerResponse = ({
 export type HandleWriteFileFromEphemeralDevServerError = (InternalServerError);
 
 export type HandleReadFileFromEphemeralDevServerData = {
-    body: ReadFileRequest;
+    path: {
+        /**
+         * The path to the file to read from the dev server
+         */
+        filepath: string;
+    };
 };
 
 export type HandleReadFileFromEphemeralDevServerResponse = ({
@@ -1162,7 +1194,7 @@ export type HandleGetExecuteRunData = {
 
 export type HandleGetExecuteRunResponse = ({
     metadata: ExecuteLogEntry;
-    code: ExecuteRunInfo;
+    code?: (null | ExecuteRunInfo);
 });
 
 export type HandleGetExecuteRunError = ({
@@ -1380,7 +1412,13 @@ export type HandleCreateRepoData = {
          * The default branch name for the repository. Defaults to "main" if not specified.
          */
         defaultBranch?: (string) | null;
+        /**
+         * Fork from another Git repository. Cannot be used with `import`.
+         */
         source?: CreateRepoSource;
+        /**
+         * Import static content with an initial commit. Cannot be used with `source`.
+         */
         import?: CreateRepoImport;
     };
 };
@@ -1458,6 +1496,19 @@ export type RemoveGithubSyncResponse = (unknown);
 
 export type RemoveGithubSyncError = (unknown);
 
+export type HandleGetRepoInfoData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+};
+
+export type HandleGetRepoInfoResponse = (RepositoryInfo);
+
+export type HandleGetRepoInfoError = (unknown);
+
 export type HandleDeleteRepoData = {
     path: {
         /**
@@ -1482,7 +1533,7 @@ export type HandleGetContentsData = {
         /**
          * The path to the file or directory. Empty for root.
          */
-        '*path': (string) | null;
+        path: (string) | null;
         /**
          * The repository ID.
          */
@@ -1505,6 +1556,10 @@ export type HandleGetContentsError = ({
 export type HandleGetBlobData = {
     path: {
         /**
+         * The object's hash
+         */
+        hash: string;
+        /**
          * The repository id
          */
         repo: string;
@@ -1514,6 +1569,35 @@ export type HandleGetBlobData = {
 export type HandleGetBlobResponse = (BlobObject);
 
 export type HandleGetBlobError = ({
+    message: string;
+});
+
+export type HandleListCommitsData = {
+    path: {
+        /**
+         * The repository id
+         */
+        repo: string;
+    };
+    query?: {
+        /**
+         * Branch name (defaults to HEAD)
+         */
+        branch?: (string) | null;
+        /**
+         * Maximum number of commits to return (default: 50, max: 500)
+         */
+        limit?: (number) | null;
+        /**
+         * Number of commits to skip (default: 0)
+         */
+        offset?: (number) | null;
+    };
+};
+
+export type HandleListCommitsResponse = (CommitList);
+
+export type HandleListCommitsError = ({
     message: string;
 });
 
@@ -1680,6 +1764,10 @@ export type HandleCreateGitTriggerError = ({
 
 export type HandleDeleteGitTriggerData = {
     path: {
+        /**
+         * The repository id
+         */
+        repo: string;
         /**
          * The trigger id
          */
