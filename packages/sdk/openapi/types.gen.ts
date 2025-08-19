@@ -232,6 +232,7 @@ export type DescribePermissionResponseSuccess = {
 export type DevServer = {
     repoId: string;
     kind: 'repo';
+    gitRef?: string;
 };
 
 export type kind2 = 'repo';

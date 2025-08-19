@@ -1102,6 +1102,7 @@ export class FreestyleSandboxes {
     envVars?: Record<string, string>;
     computeClass?: string;
     timeout?: number;
+    gitRef?: string;
   }): Promise<FreestyleDevServer> {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
@@ -1155,6 +1156,7 @@ export class FreestyleSandboxes {
     const devServerInstance: DevServer = {
       repoId: options.repoId || options.repo || "",
       kind: "repo",
+      gitRef: options.gitRef,
     };
 
     const client = this.client;
