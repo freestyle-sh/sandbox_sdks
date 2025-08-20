@@ -1106,6 +1106,10 @@ export class FreestyleSandboxes {
     computeClass?: string;
     timeout?: number;
     gitRef?: string;
+    ports?: {
+      port: number;
+      targetPort: number;
+    }[];
   }): Promise<FreestyleDevServer> {
     function formatHook(serverUrl: string, repoUrl: string) {
       const hook =
