@@ -262,7 +262,6 @@ export type DevServer = {
     repoId: string;
     gitRef?: (string) | null;
     kind: 'repo';
-    gitRef?: string;
 };
 
 export type kind2 = 'repo';
@@ -292,6 +291,11 @@ export type DevServerRequest = {
      */
     repo?: (string) | null;
     gitRef?: (string) | null;
+    /**
+     * Optional list of ports to expose externally. If not provided, port 3000 will be exposed on port 443 by default. Pass an empty array to disable external ports.
+     * Only ports 8081 and 443 can be configured externally for now. Any target port is allowed.
+     */
+    ports?: Array<PortConfig> | null;
 };
 
 export type DevServerStatusRequest = {
@@ -742,6 +746,11 @@ export type ListRecordsResponse = {
 export type NetworkPermissionData = {
     query: string;
     behavior?: Behavior;
+};
+
+export type PortConfig = {
+    port: number;
+    targetPort: number;
 };
 
 export type ReadFileEphemeralDevServerResponses = {

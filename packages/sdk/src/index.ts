@@ -923,11 +923,18 @@ export class FreestyleSandboxes {
   /**
    * Delete a git trigger.
    */
-  async deleteGitTrigger({ triggerId }: { triggerId: string }): Promise<void> {
+  async deleteGitTrigger({
+    triggerId,
+    repo,
+  }: {
+    triggerId: string;
+    repo: string;
+  }): Promise<void> {
     const response = await sandbox_openapi.handleDeleteGitTrigger({
       client: this.client,
       path: {
         trigger: triggerId,
+        repo: repo,
       },
     });
 
@@ -1002,6 +1009,7 @@ export class FreestyleSandboxes {
       client: this.client,
       path: {
         repo: repoId,
+        path: path ?? "",
         "*path": path ?? null,
       },
       query: {
@@ -1239,6 +1247,7 @@ export class FreestyleSandboxes {
             await sandbox_openapi.handleReadFileFromEphemeralDevServer({
               client,
               path: {
+                filepath: path,
                 "*filepath": path,
               },
               body: {
@@ -1326,6 +1335,7 @@ export class FreestyleSandboxes {
             await sandbox_openapi.handleReadFileFromEphemeralDevServer({
               client,
               path: {
+                filepath: path,
                 "*filepath": path,
               },
               body: {
@@ -1362,6 +1372,7 @@ export class FreestyleSandboxes {
             await sandbox_openapi.handleWriteFileFromEphemeralDevServer({
               client,
               path: {
+                filepath: path,
                 "*filepath": path,
               },
               body: {
