@@ -530,14 +530,16 @@ export class FreestyleSandboxes {
     source,
     import: _import,
     defaultBranch,
+    devServers,
   }: {
     name?: string;
     public?: boolean;
     defaultBranch?: string;
+    devServers?: sandbox_openapi.DevServerConfiguration;
   } & (
     | CreateGitRepositorySource
     | CreateGitRepositoryImport
-    | { source: never; import: never }
+    | { source: never; import: never } 
   )): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,
@@ -547,6 +549,7 @@ export class FreestyleSandboxes {
         source,
         import: _import,
         defaultBranch,
+        devServers
       },
     });
 

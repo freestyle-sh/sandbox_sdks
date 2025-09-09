@@ -136,6 +136,10 @@ export type CreateRecordParams = {
     record: DnsRecordData;
 };
 
+export type CreateRecordResponse = {
+    record: DnsRecord;
+};
+
 export type CreateRepoImport = {
     /**
      * A map of file names to their contents.
@@ -198,6 +202,7 @@ export type CreateRepositoryRequest = {
      * Import static content with an initial commit. Cannot be used with `source`.
      */
     import?: CreateRepoImport;
+    devServers?: DevServerConfiguration;
 };
 
 export type CreateRepositoryResponseSuccess = {
@@ -210,12 +215,44 @@ export type CreateRepoSource = {
     depth?: (number) | null;
 };
 
+export type CreateVmRequest = {
+    idleTimeoutSeconds?: (number) | null;
+    /**
+     * Optional list of ports to expose externally. If not provided, port 3000
+     * will be exposed on port 443 by default. Pass an empty array to disable
+     * external ports. Only ports 8081 and 443 can be configured externally for
+     * now. Any target port is allowed.
+     */
+    ports?: Array<PortMapping> | null;
+    /**
+     * Whether the api request should wait for the VM to be ready before
+     * returning. By default, the VM is considered ready when the serial
+     * console is ready for login.
+     */
+    waitForReadySignal?: (boolean) | null;
+    /**
+     * How long to wait for the ready signal before timing out. Defaults to 120
+     * seconds if not provided.
+     */
+    readySignalTimeoutSeconds?: (number) | null;
+    /**
+     * Optional working directory for the VM. File system and shell commands
+     * will be executed in this directory.
+     */
+    workdir?: (string) | null;
+    persistence?: (null | VmPersistence);
+};
+
 export type CustomBuildOptions = {
     command?: (string) | null;
     envVars?: {
         [key: string]: (string);
     } | null;
     outDir?: (string) | null;
+};
+
+export type DeleteRecordResponse = {
+    message: string;
 };
 
 export type DeploymentBuildOptions = (CustomBuildOptions) | boolean;
@@ -266,22 +303,34 @@ export type DevServer = {
 
 export type kind2 = 'repo';
 
-export type DevServerRequest = {
+export type DevServerConfiguration = {
     devCommand?: (string) | null;
-    preDevCommandOnce?: (string) | null;
-    /**
-     * @deprecated
-     */
-    baseId?: (string) | null;
+    installCommand?: (string) | null;
+    timeout?: (number) | null;
     envVars?: {
         [key: string]: (string);
     } | null;
+    ports?: Array<PortConfig> | null;
+    preset?: (null | DevServerPreset);
+};
+
+export type DevServerLogsRequest = {
+    devServer: DevServer;
+    /**
+     * Number of log lines to return per page (default 200)
+     */
+    count?: (number) | null;
+    /**
+     * 1-based page index. page=1 returns the most recent lines (default 1)
+     */
+    page?: (number) | null;
+};
+
+export type DevServerPreset = 'auto' | 'nextJs' | 'vite' | 'expo';
+
+export type DevServerRequest = DevServerConfiguration & {
     repoId?: (string) | null;
     computeClass?: (string) | null;
-    /**
-     * Timeout in seconds
-     */
-    timeout?: (number) | null;
     /**
      * @deprecated
      */
@@ -291,11 +340,15 @@ export type DevServerRequest = {
      */
     repo?: (string) | null;
     gitRef?: (string) | null;
+    preDevCommandOnce?: (string) | null;
     /**
-     * Optional list of ports to expose externally. If not provided, port 3000 will be exposed on port 443 by default. Pass an empty array to disable external ports.
-     * Only ports 8081 and 443 can be configured externally for now. Any target port is allowed.
+     * @deprecated
      */
-    ports?: Array<PortConfig> | null;
+    baseId?: (string) | null;
+};
+
+export type DevServerRestartRequest = {
+    devServer: DevServer;
 };
 
 export type DevServerStatusRequest = {
@@ -331,6 +384,11 @@ export type DomainVerificationRequest = {
     accountId: string;
     verificationCode: string;
     createdAt: string;
+};
+
+export type ExecAwaitRequest = {
+    command: string;
+    terminal?: (string) | null;
 };
 
 export type ExecRequest = {
@@ -373,6 +431,34 @@ export type FileReadContent = {
 };
 
 export type kind3 = 'file';
+
+export type ForkVmRequest = {
+    idleTimeoutSeconds?: (number) | null;
+    /**
+     * Optional list of ports to expose externally. If not provided, port 3000
+     * will be exposed on port 443 by default. Pass an empty array to disable
+     * external ports. Only ports 8081 and 443 can be configured externally for
+     * now. Any target port is allowed.
+     */
+    ports?: Array<PortMapping> | null;
+    /**
+     * Whether the api request should wait for the VM to be ready before
+     * returning. By default, the VM is considered ready when the serial
+     * console is ready for login.
+     */
+    readySignalTimeoutSeconds?: (number) | null;
+    /**
+     * How long to wait for the ready signal before timing out. Defaults to 120
+     * seconds if not provided.
+     */
+    waitForReadySignal?: (boolean) | null;
+    /**
+     * Optional working directory for the VM. File system and shell commands
+     * will be executed in this directory.
+     */
+    workdir?: (string) | null;
+    persistence?: (null | VmPersistence);
+};
 
 export type FreestyleCloudstateDeployConfiguration = {
     /**
@@ -753,6 +839,11 @@ export type PortConfig = {
     targetPort: number;
 };
 
+export type PortMapping = {
+    port: number;
+    targetPort: number;
+};
+
 export type ReadFileEphemeralDevServerResponses = {
     id: string;
     isNew: boolean;
@@ -769,7 +860,7 @@ export type ReadFileEphemeralDevServerResponses = {
     isNew: boolean;
 } | InternalServerError;
 
-export type RepositoryInfo = {
+export type RepositoryInfoRaw = {
     id: string;
     name?: (string) | null;
     accountId: string;
@@ -785,6 +876,10 @@ export type RepositoryMetadata = {
         [key: string]: TagDetails;
     };
     defaultBranch: string;
+};
+
+export type ResizeVmRequest = {
+    sizeMb: number;
 };
 
 export type RevokeGitTokenRequest = {
@@ -813,6 +908,12 @@ export type Signature = {
     date: string;
     name: string;
     email: string;
+};
+
+export type StartVmRequest = {
+    idleTimeoutSeconds?: (number) | null;
+    readySignalTimeoutSeconds?: (number) | null;
+    waitForReadySignal?: (boolean) | null;
 };
 
 export type TagDetails = {
@@ -877,11 +978,35 @@ export type TreeObject = {
     sha: string;
 };
 
+export type UpdateDevServerConfigRequest = DevServerConfiguration & {
+    branch?: (string) | null;
+};
+
 export type UpdatePermissionRequest = {
     permission: AccessLevel;
 };
 
 export type Visibility = 'public' | 'private';
+
+export type VmPersistence = {
+    /**
+     * Priority for eviction when storage quota is reached. Higher values
+     * mean the VM is less likely to be evicted. Range is 0-10, default is
+     * 5.
+     */
+    priority?: (number) | null;
+    type: 'sticky';
+} | {
+    type: 'ephemeral';
+} | {
+    type: 'persistent';
+};
+
+export type type4 = 'sticky';
+
+export type WriteFileRequest = {
+    content: string;
+};
 
 export type HandleDeployCloudstateData = {
     body: FreestyleCloudstateDeployRequest;
@@ -917,11 +1042,12 @@ export type HandleCreateRecordData = {
     body: CreateRecordParams;
 };
 
-export type HandleCreateRecordResponse = ({
-    record: DnsRecord;
-});
+export type HandleCreateRecordResponse = (CreateRecordResponse);
 
 export type HandleCreateRecordError = ({
+    domain: string;
+    account_id: string;
+} | {
     message: string;
 });
 
@@ -932,12 +1058,14 @@ export type HandleDeleteRecordData = {
     };
 };
 
-export type HandleDeleteRecordResponse = ({
-    message: string;
-});
+export type HandleDeleteRecordResponse = (DeleteRecordResponse);
 
 export type HandleDeleteRecordError = ({
-    message: string;
+    domain: string;
+    account_id: string;
+} | {
+    domain: string;
+    name: string;
 });
 
 export type HandleVerifyWildcardData = {
@@ -1075,6 +1203,8 @@ export type HandleEphemeralDevServerResponse = ({
     installCommandRunning: boolean;
     mcpEphemeralUrl?: (string) | null;
     ephemeralUrl?: (string) | null;
+    vmId?: (string) | null;
+    baseId?: (string) | null;
 });
 
 export type HandleEphemeralDevServerError = (InternalServerError);
@@ -1145,6 +1275,26 @@ export type HandleGitCommitPushResponse = ({
 });
 
 export type HandleGitCommitPushError = (InternalServerError);
+
+export type HandleDevServerLogsData = {
+    body: DevServerLogsRequest;
+};
+
+export type HandleDevServerLogsResponse = ({
+    logs: Array<(string)>;
+});
+
+export type HandleDevServerLogsError = (InternalServerError);
+
+export type HandleDevServerRestartData = {
+    body: DevServerRestartRequest;
+};
+
+export type HandleDevServerRestartResponse = ({
+    restarted: boolean;
+});
+
+export type HandleDevServerRestartError = (InternalServerError);
 
 export type HandleShutdownDevServerData = {
     body: ShutdownDevServerRequest;
@@ -1429,6 +1579,7 @@ export type HandleCreateRepoData = {
          * Import static content with an initial commit. Cannot be used with `source`.
          */
         import?: CreateRepoImport;
+        devServers?: DevServerConfiguration;
     };
 };
 
@@ -1464,6 +1615,58 @@ export type HandleSetDefaultBranchData = {
 export type HandleSetDefaultBranchResponse = (SetDefaultBranchResponse);
 
 export type HandleSetDefaultBranchError = unknown;
+
+export type GetDevServerConfigurationData = {
+    path: {
+        /**
+         * Repository ID
+         */
+        repo_id: string;
+    };
+    query: {
+        /**
+         * Git branch name
+         */
+        branch: string;
+    };
+};
+
+export type GetDevServerConfigurationResponse = (DevServerConfiguration);
+
+export type GetDevServerConfigurationError = (unknown);
+
+export type UpdateDevServerConfigurationData = {
+    body: UpdateDevServerConfigRequest;
+    path: {
+        /**
+         * Repository ID
+         */
+        repo_id: string;
+    };
+};
+
+export type UpdateDevServerConfigurationResponse = (unknown);
+
+export type UpdateDevServerConfigurationError = (unknown);
+
+export type DeleteDevServerConfigurationData = {
+    path: {
+        /**
+         * Repository ID
+         */
+        repo_id: string;
+    };
+    query: {
+        /**
+         * Git branch name (optional, defaults to repository default branch)
+         */
+        branch: string;
+    };
+};
+
+export type DeleteDevServerConfigurationResponse = (void);
+
+export type DeleteDevServerConfigurationError = (unknown);
 
 export type GetGithubSyncData = {
     path: {
@@ -1514,7 +1717,7 @@ export type HandleGetRepoInfoData = {
     };
 };
 
-export type HandleGetRepoInfoResponse = (RepositoryInfo);
+export type HandleGetRepoInfoResponse = (RepositoryInfoRaw);
 
 export type HandleGetRepoInfoError = (unknown);
 
@@ -1825,6 +2028,163 @@ export type HandleGetLogsData = {
 export type HandleGetLogsResponse = (FreestyleGetLogsResponse);
 
 export type HandleGetLogsError = unknown;
+
+export type CreateVmData = {
+    body: CreateVmRequest;
+};
+
+export type ResizeVmData = {
+    body: ResizeVmRequest;
+    path: {
+        id: string;
+    };
+};
+
+export type GetVmData = {
+    path: {
+        vm_id: string;
+    };
+};
+
+export type DeleteVmData = {
+    path: {
+        /**
+         * The ID of the VM to delete
+         */
+        vm_id: string;
+    };
+};
+
+export type WaitVmData = {
+    path: {
+        /**
+         * The ID of the VM to wait for
+         */
+        vm_id: string;
+    };
+};
+
+export type ExecAwaitData = {
+    body: ExecAwaitRequest;
+    path: {
+        /**
+         * The ID of the VM to execute the command in
+         */
+        vm_id: string;
+    };
+};
+
+export type GetFileData = {
+    path: {
+        /**
+         * The path of the file to get
+         */
+        filepath: string;
+        /**
+         * The ID of the VM to get the file from
+         */
+        vm_id: string;
+    };
+};
+
+export type PutFileData = {
+    body: WriteFileRequest;
+    path: {
+        /**
+         * The path of the file to put
+         */
+        filepath: string;
+        /**
+         * The ID of the VM to put the file to
+         */
+        vm_id: string;
+    };
+};
+
+export type ForkVmData = {
+    body: ForkVmRequest;
+    path: {
+        vm_id: string;
+    };
+};
+
+export type OptimizeVmData = {
+    path: {
+        /**
+         * The ID of the VM to optimize
+         */
+        vm_id: string;
+    };
+};
+
+export type StartVmData = {
+    body: StartVmRequest;
+    path: {
+        vm_id: string;
+    };
+};
+
+export type StopVmData = {
+    path: {
+        /**
+         * The ID of the VM to stop
+         */
+        vm_id: string;
+    };
+};
+
+export type SuspendVmData = {
+    path: {
+        /**
+         * The ID of the VM to suspend
+         */
+        vm_id: string;
+    };
+};
+
+export type ListTerminalsData = {
+    path: {
+        /**
+         * The ID of the VM
+         */
+        vm_id: string;
+    };
+};
+
+export type GetTerminalLogsData = {
+    path: {
+        /**
+         * The ID of the terminal session
+         */
+        terminal_id: string;
+        /**
+         * The ID of the VM
+         */
+        vm_id: string;
+    };
+};
+
+export type GetTerminalXtermData = {
+    path: {
+        /**
+         * The ID of the terminal session
+         */
+        terminal_id: string;
+        /**
+         * The ID of the VM
+         */
+        vm_id: string;
+    };
+};
+
+export type WatchFilesData = {
+    path: {
+        /**
+         * The ID of the VM to watch files for
+         */
+        vm_id: string;
+    };
+};
 
 export type HandleDeployWebData = {
     body: FreestyleDeployWebPayload;
