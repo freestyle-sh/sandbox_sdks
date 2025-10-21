@@ -533,6 +533,10 @@ export type FreestyleDeployWebConfiguration = {
      * Timeout for the deployment in seconds. If not provided, the default is 10 seconds.
      */
     timeout?: (number) | null;
+    /**
+     * Whether to wait for the deployment to finish before returning. Defaults to true.
+     */
+    await?: (boolean) | null;
 };
 
 export type FreestyleDeployWebErrorResponse = {
@@ -572,6 +576,8 @@ export type FreestyleDeployWebSuccessResponseV2 = {
      * The entrypoint file for the website. If not specified we try to automatically detect it.
      */
     entrypoint: string;
+} | {
+    deploymentId: string;
 };
 
 export type FreestyleDomainVerificationRequest = {
@@ -1137,12 +1143,6 @@ export type HandleDeleteDomainMappingData = {
         domain: string;
     };
 };
-
-export type HandleDeleteDomainMappingResponse = (unknown);
-
-export type HandleDeleteDomainMappingError = ({
-    message: string;
-});
 
 export type HandleListDomainVerificationRequestsResponse = (Array<{
     verificationCode: string;
@@ -2200,7 +2200,9 @@ export type HandleDeployWebV2Data = {
 
 export type HandleDeployWebV2Response = (FreestyleDeployWebSuccessResponseV2);
 
-export type HandleDeployWebV2Error = (FreestyleDeployWebErrorResponse);
+export type HandleDeployWebV2Error = (unknown | {
+    domain: string;
+} | FreestyleDeployWebErrorResponse);
 
 export type HandleListWebDeploysData = {
     query: {

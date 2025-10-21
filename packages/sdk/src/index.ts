@@ -71,8 +71,7 @@ export type {
   DeploymentSource,
   HandleListDomainMappingsResponse,
   HandleListDomainMappingsData,
-  HandleInsertDomainMappingResponse,
-  HandleDeleteDomainMappingResponse,
+  HandleInsertDomainMappingResponse
 } from "../openapi/index.ts";
 
 /**
@@ -199,7 +198,7 @@ export class FreestyleSandboxes {
       return response.data;
     }
     throw new Error(
-      `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error?.message}`
+      `Failed to deploy web project\n\nStatus: ${response.response.status}\n\nMessage: ${response.error}`
     );
   }
 
@@ -478,18 +477,18 @@ export class FreestyleSandboxes {
     domain,
   }: {
     domain: string;
-  }): Promise<sandbox_openapi.HandleDeleteDomainMappingResponse> {
+  }): Promise<void> {
     const response = await sandbox_openapi.handleDeleteDomainMapping({
       client: this.client,
       path: {
         domain,
       },
     });
-    if (response.data) {
-      return response.data;
+    if (response.response.ok) {
+      return;
     }
     throw new Error(
-      `Failed to remove domain mapping for domain ${domain}: ${response.error.message}`
+      `Failed to remove domain mapping for domain ${domain}: ${response.error}`
     );
   }
 
@@ -539,7 +538,7 @@ export class FreestyleSandboxes {
   } & (
     | CreateGitRepositorySource
     | CreateGitRepositoryImport
-    | { source: never; import: never } 
+    | { source?: never; import?: never } 
   )): Promise<CreateRepositoryResponseSuccess> {
     const response = await sandbox_openapi.handleCreateRepo({
       client: this.client,
